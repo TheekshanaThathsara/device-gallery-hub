@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -9,18 +10,20 @@ export default function ProductCard({ product }) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative overflow-hidden aspect-square">
-        <img 
-          src={product.image} 
-          alt={product.name} 
-          className={`w-full h-full object-cover transform transition-transform duration-500 ${isHovered ? 'scale-105' : 'scale-100'}`} 
-        />
-        {product.discount > 0 && (
-          <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md">
-            {product.discount}% OFF
-          </span>
-        )}
-      </div>
+      <Link to={`/product/${product.id}`} className="block">
+        <div className="relative overflow-hidden aspect-square">
+          <img 
+            src={product.image} 
+            alt={product.name} 
+            className={`w-full h-full object-cover transform transition-transform duration-500 ${isHovered ? 'scale-105' : 'scale-100'}`} 
+          />
+          {product.discount > 0 && (
+            <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md">
+              {product.discount}% OFF
+            </span>
+          )}
+        </div>
+      </Link>
       
       <div className="p-4">
         <div className="mb-1">
@@ -28,9 +31,11 @@ export default function ProductCard({ product }) {
             {product.subcategory}
           </span>
         </div>
-        <h3 className="text-secondary-800 font-medium mb-1 line-clamp-2 min-h-[2.5rem]">
-          {product.name}
-        </h3>
+        <Link to={`/product/${product.id}`}>
+          <h3 className="text-secondary-800 font-medium mb-1 line-clamp-2 min-h-[2.5rem] hover:text-primary-600 transition-colors">
+            {product.name}
+          </h3>
+        </Link>
         <div className="flex items-center justify-between mt-2">
           <div className="flex items-center">
             <span className="text-secondary-900 font-bold">${product.price.toFixed(2)}</span>
