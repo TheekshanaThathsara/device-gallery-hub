@@ -1,9 +1,11 @@
-
 import { Routes, Route } from 'react-router-dom';
 import './App.css';
 import Navbar from './components/layout/Navbar';
 import Hero from './components/home/Hero';
 import CategorySection from './components/home/CategorySection';
+import FeaturedProducts from './components/home/FeaturedProducts';
+import Testimonials from './components/home/Testimonials';
+import Newsletter from './components/home/Newsletter';
 import Footer from './components/layout/Footer';
 import ProductListingPage from './components/shop/ProductListingPage';
 import ProductDetailsPage from './components/product/ProductDetailsPage';
@@ -17,7 +19,7 @@ import InventoryManagement from './components/admin/InventoryManagement';
 
 function App() {
   return (
-    <div className="min-h-screen bg-secondary-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Regular Store Routes */}
       <Routes>
         <Route path="/" element={
@@ -26,6 +28,9 @@ function App() {
             <main>
               <Hero />
               <CategorySection />
+              <FeaturedProducts />
+              <Testimonials />
+              <Newsletter />
             </main>
             <Footer />
           </>
