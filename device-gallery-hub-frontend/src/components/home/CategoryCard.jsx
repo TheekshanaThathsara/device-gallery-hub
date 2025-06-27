@@ -1,12 +1,36 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function CategoryCard({ title, imageUrl, description }) {
+export default function CategoryCard({ title, imageUrl, description, fallbackImageUrl }) {
   const [imgError, setImgError] = useState(false);
   
-  const handleImageError = () => {
-    setImgError(true);
+  const handleImageError = (e) => {
+    // First try fallback image if available
+    if (fallbackImageUrl && !e.target.dataset.usedFallback) {
+      e.target.dataset.usedFallback = true;
+      e.target.src = fallbackImageUrl;
+    } 
+    // Then try to reload image with timestamp to bypass cache
+    else if (!e.target.dataset.retried) {
+      e.target.dataset.retried = true;
+      e.target.src = `${imageUrl}?retry=${new Date().getTime()}`;
+    } 
+    // If all fails, show the placeholder
+    else {
+      setImgError(true);
+    }
   };
+  
+  // Preload images for better performance
+  useEffect(() => {
+    const img = new Image();
+    img.src = imageUrl;
+    
+    if (fallbackImageUrl) {
+      const fallbackImg = new Image();
+      fallbackImg.src = fallbackImageUrl;
+    }
+  }, [imageUrl, fallbackImageUrl]);
   return (
     <div className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-primary-200 transform hover:-translate-y-2 hover:shadow-primary-100/50 h-full flex flex-col">
       {/* Image container with fixed height */}
@@ -18,8 +42,8 @@ export default function CategoryCard({ title, imageUrl, description }) {
               alt={title} 
               className="w-full h-full object-cover transform group-hover:scale-110 transition-all duration-700 ease-in-out object-center"
               onError={handleImageError}
-              loading="lazy"
-              style={{ maxHeight: "100%", width: "100%", objectFit: "cover" }}
+              loading="eager"
+              style={{ height: "100%", width: "100%", objectFit: "cover", objectPosition: "center" }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-30 group-hover:opacity-80 transition-all duration-500"></div>
             
