@@ -1,74 +1,176 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <nav className="bg-white shadow-sm">
+    <nav 
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex justify-between items-center">
           {/* Logo */}
-          <div className="flex-shrink-0 flex items-center">
-            <Link to="/" className="text-primary-600 text-xl font-bold">Device Gallery Hub</Link>
-          </div>
-
-          {/* Search Bar - hidden on mobile */}
-          <div className="hidden sm:block flex-1 max-w-lg mx-4">
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <input
-                type="text"
-                name="search"
-                id="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm placeholder-gray-500"
-                placeholder="Search products..."
-              />
+          <Link to="/" className="flex items-center space-x-2 group">
+            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${isScrolled ? 'bg-blue-600' : 'bg-white/20 backdrop-blur-sm'}`}>
+              <svg 
+                className={`w-6 h-6 ${isScrolled ? 'text-white' : 'text-white'} transition-transform duration-300 group-hover:rotate-12`} 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+              </svg>
             </div>
-          </div>
+            <span className={`text-lg font-bold tracking-tight ${
+              isScrolled ? 'text-gray-800' : 'text-white'
+            }`}>
+              Device Gallery
+            </span>
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-4 flex items-center space-x-4">
-              <div className="relative">
-                <Link to="/shop" className="px-3 py-2 text-secondary-600 hover:text-primary-600 font-medium">
-                  Categories
-                </Link>
-              </div>
-              <Link to="/cart" className="relative inline-flex items-center p-2 text-secondary-600 hover:text-primary-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          <div className="hidden md:flex items-center space-x-8">
+            {/* Search */}
+            <div className={`relative transition-all duration-300 ${
+              isScrolled ? 'w-64' : 'w-48 hover:w-64'
+            }`}>
+              <input
+                type="text"
+                placeholder="Search products..."
+                className={`w-full py-2 pl-10 pr-4 rounded-full text-sm focus:outline-none focus:ring-2 transition-all duration-200 ${
+                  isScrolled 
+                    ? 'bg-gray-100 text-gray-700 focus:ring-blue-500 focus:bg-white' 
+                    : 'bg-white/10 text-white placeholder-white/70 backdrop-blur-sm focus:ring-white/50 focus:bg-white/20'
+                }`}
+              />
+              <div className="absolute left-3 top-2.5">
+                <svg 
+                  className={`h-4 w-4 ${isScrolled ? 'text-gray-500' : 'text-white/70'}`} 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-                <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-primary-500 rounded-full">3</span>
+              </div>
+            </div>
+
+            {/* Nav Links */}
+            <div className="flex items-center space-x-6">
+              <Link 
+                to="/shop" 
+                className={`text-sm font-medium transition-all duration-200 ${
+                  isScrolled 
+                    ? 'text-gray-600 hover:text-blue-600' 
+                    : 'text-white/90 hover:text-white'
+                } hover:scale-105 relative px-1 py-1 group`}
+              >
+                Shop
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-current group-hover:w-full transition-all duration-200"></span>
               </Link>
-              <button className="ml-4 px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                Login
+              <Link 
+                to="/new-arrivals" 
+                className={`text-sm font-medium transition-all duration-200 ${
+                  isScrolled 
+                    ? 'text-gray-600 hover:text-blue-600' 
+                    : 'text-white/90 hover:text-white'
+                } hover:scale-105 relative px-1 py-1 group`}
+              >
+                New Arrivals
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-current group-hover:w-full transition-all duration-200"></span>
+              </Link>
+              <Link 
+                to="/deals" 
+                className={`text-sm font-medium transition-all duration-200 ${
+                  isScrolled 
+                    ? 'text-gray-600 hover:text-blue-600' 
+                    : 'text-white/90 hover:text-white'
+                } hover:scale-105 relative px-1 py-1 group`}
+              >
+                Deals
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-current group-hover:w-full transition-all duration-200"></span>
+              </Link>
+              <Link 
+                to="/support" 
+                className={`text-sm font-medium transition-all duration-200 ${
+                  isScrolled 
+                    ? 'text-gray-600 hover:text-blue-600' 
+                    : 'text-white/90 hover:text-white'
+                } hover:scale-105 relative px-1 py-1 group`}
+              >
+                Support
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-current group-hover:w-full transition-all duration-200"></span>
+              </Link>
+            </div>
+
+            {/* Cart & Account */}
+            <div className="flex items-center space-x-4">
+              <button className={`relative p-2 rounded-full transition-colors duration-200 ${
+                isScrolled 
+                  ? 'hover:bg-gray-100' 
+                  : 'hover:bg-white/10'
+              }`}>
+                <svg 
+                  className={`h-5 w-5 ${isScrolled ? 'text-gray-600' : 'text-white'}`} 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                <span className="absolute -top-1 -right-1 bg-yellow-400 text-xs text-blue-800 font-bold rounded-full w-5 h-5 flex items-center justify-center">3</span>
+              </button>
+              <button className={`relative p-2 rounded-full transition-colors duration-200 ${
+                isScrolled 
+                  ? 'hover:bg-gray-100' 
+                  : 'hover:bg-white/10'
+              }`}>
+                <svg 
+                  className={`h-5 w-5 ${isScrolled ? 'text-gray-600' : 'text-white'}`} 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
               </button>
             </div>
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile Menu Button */}
           <div className="flex md:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-secondary-600 hover:text-primary-600 focus:outline-none"
-              aria-expanded="false"
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+              className={`p-2 rounded-md ${
+                isScrolled 
+                  ? 'text-gray-600 hover:text-blue-600 hover:bg-gray-100'
+                  : 'text-white hover:bg-white/10'
+              }`}
             >
-              <span className="sr-only">Open main menu</span>
-              {!isOpen ? (
-                <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              {isMobileMenuOpen ? (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
             </button>
@@ -76,41 +178,96 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu, show/hide based on menu state */}
-      <div className={`${isOpen ? 'block' : 'hidden'} md:hidden`}>
-        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-          {/* Search field on mobile */}
-          <div className="px-2 py-2">
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <input
-                type="text"
-                name="mobile-search"
-                id="mobile-search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm placeholder-gray-500"
-                placeholder="Search products..."
-              />
+      {/* Mobile Menu */}
+      <div className={`md:hidden ${isMobileMenuOpen ? 'block' : 'hidden'} transition-all duration-300 ease-in-out`}>
+        <div className={`px-2 pt-2 pb-3 space-y-1 sm:px-3 ${
+          isScrolled ? 'bg-white' : 'bg-blue-600/95 backdrop-blur-sm'
+        }`}>
+          <div className="px-4 py-2">
+            <input
+              type="text"
+              placeholder="Search products..."
+              className={`w-full py-2 pl-10 pr-4 rounded-lg text-sm focus:outline-none focus:ring-2 ${
+                isScrolled 
+                  ? 'bg-gray-100 text-gray-700 focus:ring-blue-500' 
+                  : 'bg-white/10 text-white placeholder-white/70 focus:ring-white/50'
+              }`}
+            />
+            <div className="absolute left-7 top-16">
+              <svg 
+                className={`h-4 w-4 ${isScrolled ? 'text-gray-500' : 'text-white/70'}`} 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
             </div>
           </div>
-          
-          <Link to="/shop" className="block w-full px-3 py-2 text-left rounded-md text-base font-medium text-secondary-600 hover:bg-secondary-100">
-            Categories
+          <Link 
+            to="/shop" 
+            className={`block px-3 py-2 rounded-md text-base font-medium ${
+              isScrolled 
+                ? 'text-gray-700 hover:bg-gray-100' 
+                : 'text-white hover:bg-white/10'
+            }`}
+          >
+            Shop
           </Link>
-
-          <Link to="/cart" className="flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-secondary-600 hover:bg-secondary-100">
-            <span>Cart</span>
-            <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-semibold text-white bg-primary-500 rounded-full">3</span>
+          <Link 
+            to="/new-arrivals" 
+            className={`block px-3 py-2 rounded-md text-base font-medium ${
+              isScrolled 
+                ? 'text-gray-700 hover:bg-gray-100' 
+                : 'text-white hover:bg-white/10'
+            }`}
+          >
+            New Arrivals
           </Link>
-
-          <button className="block w-full mt-4 px-4 py-2 border border-transparent rounded-md text-base font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-            Login
-          </button>
+          <Link 
+            to="/deals" 
+            className={`block px-3 py-2 rounded-md text-base font-medium ${
+              isScrolled 
+                ? 'text-gray-700 hover:bg-gray-100' 
+                : 'text-white hover:bg-white/10'
+            }`}
+          >
+            Deals
+          </Link>
+          <Link 
+            to="/support" 
+            className={`block px-3 py-2 rounded-md text-base font-medium ${
+              isScrolled 
+                ? 'text-gray-700 hover:bg-gray-100' 
+                : 'text-white hover:bg-white/10'
+            }`}
+          >
+            Support
+          </Link>
+          <div className="flex items-center justify-between px-3 py-2 border-t border-white/10 mt-2">
+            <button className="flex items-center space-x-2">
+              <svg 
+                className={`h-5 w-5 ${isScrolled ? 'text-gray-600' : 'text-white'}`} 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              <span className={`${isScrolled ? 'text-gray-700' : 'text-white'}`}>Cart (3)</span>
+            </button>
+            <button className="flex items-center space-x-2">
+              <svg 
+                className={`h-5 w-5 ${isScrolled ? 'text-gray-600' : 'text-white'}`} 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span className={`${isScrolled ? 'text-gray-700' : 'text-white'}`}>Account</span>
+            </button>
+          </div>
         </div>
       </div>
     </nav>
