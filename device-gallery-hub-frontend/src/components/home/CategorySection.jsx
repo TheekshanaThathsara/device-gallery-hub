@@ -2,12 +2,17 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import CategoryCard from './CategoryCard';
 
-// Import local images
-import chargerImg from '../../assets/images/charger.jpg';
-import datacableImg from '../../assets/images/datacable.jpg';
-import powerbankImg from '../../assets/images/powerbank.jpg';
+// Import local images for categories
+import chargerImg from '../../assets/images/products/charger1.jpg';
+import datacableImg from '../../assets/images/products/cable1.jpg';
+import powerbankImg from '../../assets/images/products/powerbank1.jpg';
 import handsfreeImg from '../../assets/images/categories/handsfree.jpg';
 import earbudsImg from '../../assets/images/categories/earbuds.jpg';
+
+// Fallback imports for better reliability
+import chargerFallbackImg from '../../assets/images/charger.jpg';
+import datacableFallbackImg from '../../assets/images/datacable.jpg';
+import powerbankFallbackImg from '../../assets/images/powerbank.jpg';
 
 export default function CategorySection() {
   const [isVisible, setIsVisible] = useState(false);
@@ -25,30 +30,35 @@ export default function CategorySection() {
       title: 'Handsfrees',
       description: 'High-quality micro & type-C handsfree options',
       imageUrl: handsfreeImg,
+      fallbackImageUrl: chargerFallbackImg,
     },
     {
       id: 2,
       title: 'Data Cables',
       description: 'Premium braided cables with fast data transfer & durable connectors',
       imageUrl: datacableImg,
+      fallbackImageUrl: datacableFallbackImg,
     },
     {
       id: 3,
       title: 'Power Banks',
       description: 'Slim & powerful portable chargers with fast charging technology',
       imageUrl: powerbankImg,
+      fallbackImageUrl: powerbankFallbackImg,
     },
     {
       id: 4,
       title: 'Chargers',
       description: 'Multi-port fast chargers with GaN technology for all devices',
       imageUrl: chargerImg,
+      fallbackImageUrl: chargerFallbackImg,
     },
     {
       id: 5,
       title: 'Earbuds',
       description: 'Wireless earbuds with premium sound quality',
       imageUrl: earbudsImg,
+      fallbackImageUrl: chargerFallbackImg,
     },
   ];
 
@@ -92,6 +102,7 @@ export default function CategorySection() {
                 title={category.title}
                 description={category.description}
                 imageUrl={category.imageUrl}
+                fallbackImageUrl={category.fallbackImageUrl}
               />
             </div>
           ))}
