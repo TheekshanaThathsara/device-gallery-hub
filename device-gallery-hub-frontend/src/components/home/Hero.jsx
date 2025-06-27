@@ -16,7 +16,7 @@ export default function Hero() {
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative pt-10 pb-14 sm:pt-16 sm:pb-20 md:pb-28 lg:pt-24 lg:pb-32">
+        <div className="relative pt-24 pb-14 sm:pt-28 sm:pb-20 md:pb-28 lg:pt-32 lg:pb-32">
           <div className="lg:grid lg:grid-cols-12 lg:gap-8 items-center">
             {/* Left Content */}
             <div className={`sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
