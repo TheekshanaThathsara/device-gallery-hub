@@ -5,6 +5,7 @@ export default function SidebarFilter({ onFilterChange }) {
   const [selectedCategories, setSelectedCategories] = useState({});
   const [selectedSubcategories, setSelectedSubcategories] = useState({});
   const [selectedCapacities, setSelectedCapacities] = useState({});
+  const [expandedSection, setExpandedSection] = useState(null);
   
   const categories = [
     { id: 'handsfree', name: 'Handsfree' },
@@ -99,153 +100,242 @@ export default function SidebarFilter({ onFilterChange }) {
 
   // Check if category has any active subcategories
   const isSubcategoryVisible = (categoryId) => {
-    return selectedCategories[categoryId];
+    return selectedCategories[categoryId] || expandedSection === 'subcategories';
   };
 
   // Check if the power bank category is checked to show capacities
   const isCapacityVisible = () => {
-    return selectedCategories['power-banks'];
+    return selectedCategories['power-banks'] || expandedSection === 'capacities';
   };
 
+  // Count active filters
+  const getActiveFiltersCount = () => {
+    const categoryCount = Object.values(selectedCategories).filter(Boolean).length;
+    const subcategoryCount = Object.values(selectedSubcategories).filter(Boolean).length;
+    const capacityCount = Object.values(selectedCapacities).filter(Boolean).length;
+    const priceModified = priceRange[0] > 0 || priceRange[1] < 200;
+    
+    return categoryCount + subcategoryCount + capacityCount + (priceModified ? 1 : 0);
+  };
+  
+  // Toggle section expansion for responsive layout
+  const toggleSection = (section) => {
+    if (expandedSection === section) {
+      setExpandedSection(null);
+    } else {
+      setExpandedSection(section);
+    }
+  };
+
+  const activeFiltersCount = getActiveFiltersCount();
+
   return (
-    <div className="bg-white p-5 rounded-lg shadow-sm">
-      <h2 className="text-lg font-semibold text-secondary-800 mb-4">Filters</h2>
-      
-      {/* Categories */}
-      <div className="mb-6">
-        <h3 className="text-sm font-medium text-secondary-700 mb-3">Categories</h3>
-        {categories.map(category => (
-          <div key={category.id} className="flex items-center mb-2">
-            <input
-              type="checkbox"
-              id={`category-${category.id}`}
-              checked={selectedCategories[category.id] || false}
-              onChange={(e) => handleCategoryChange(category.id, e.target.checked)}
-              className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
-            />
-            <label htmlFor={`category-${category.id}`} className="ml-2 text-sm text-secondary-700">
-              {category.name}
-            </label>
-          </div>
-        ))}
+    <div className="space-y-6">
+      {/* Categories Filter */}
+      <div className="flex flex-wrap gap-2">
+        {categories.map(category => {
+          const isActive = selectedCategories[category.id] || false;
+          return (
+            <div key={category.id} className="inline-block">
+              <button
+                onClick={() => handleCategoryChange(category.id, !isActive)}
+                className={`px-3 py-2 text-sm font-medium rounded-xl transition-all duration-300 ${
+                  isActive
+                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md'
+                    : 'text-gray-600 bg-gray-100 hover:bg-blue-50 hover:text-blue-600'
+                }`}
+                aria-pressed={isActive}
+                aria-label={`Filter by ${category.name}`}
+              >
+                {category.name}
+              </button>
+            </div>
+          );
+        })}
       </div>
       
-      {/* Subcategories */}
-      <div className="mb-6">
-        <h3 className="text-sm font-medium text-secondary-700 mb-3">Subcategories</h3>
-        {subcategories.map(subcategory => (
-          <div 
-            key={subcategory.id} 
-            className={`flex items-center mb-2 ${subcategory.parent.some(p => isSubcategoryVisible(p)) ? '' : 'hidden'}`}
+      {/* Collapsible Sections */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Price Range */}
+        <div className="bg-gray-50 p-4 rounded-xl">
+          <button
+            onClick={() => toggleSection('price')}
+            className="flex items-center justify-between w-full text-left"
+            aria-expanded={expandedSection === 'price'}
           >
-            <input
-              type="checkbox"
-              id={`subcategory-${subcategory.id}`}
-              checked={selectedSubcategories[subcategory.id] || false}
-              onChange={(e) => handleSubcategoryChange(subcategory.id, e.target.checked)}
-              className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
-              disabled={!subcategory.parent.some(p => isSubcategoryVisible(p))}
-            />
-            <label 
-              htmlFor={`subcategory-${subcategory.id}`} 
-              className={`ml-2 text-sm ${subcategory.parent.some(p => isSubcategoryVisible(p)) ? 'text-secondary-700' : 'text-secondary-400'}`}
-            >
-              {subcategory.name}
-            </label>
-          </div>
-        ))}
-      </div>
-      
-      {/* Power Bank Capacities */}
-      <div className={`mb-6 ${isCapacityVisible() ? '' : 'hidden'}`}>
-        <h3 className="text-sm font-medium text-secondary-700 mb-3">Capacity</h3>
-        {capacities.map(capacity => (
-          <div key={capacity.id} className="flex items-center mb-2">
-            <input
-              type="checkbox"
-              id={`capacity-${capacity.id}`}
-              checked={selectedCapacities[capacity.id] || false}
-              onChange={(e) => handleCapacityChange(capacity.id, e.target.checked)}
-              className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
-              disabled={!isCapacityVisible()}
-            />
-            <label 
-              htmlFor={`capacity-${capacity.id}`} 
-              className={`ml-2 text-sm ${isCapacityVisible() ? 'text-secondary-700' : 'text-secondary-400'}`}
-            >
-              {capacity.name}
-            </label>
-          </div>
-        ))}
-      </div>
-      
-      {/* Price Range */}
-      <div className="mb-4">
-        <h3 className="text-sm font-medium text-secondary-700 mb-3">Price Range</h3>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs text-secondary-500">${priceRange[0]}</span>
-          <span className="text-xs text-secondary-500">${priceRange[1]}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <input
-            type="range"
-            min="0"
-            max="200"
-            step="10"
-            value={priceRange[0]}
-            onChange={(e) => handlePriceChange(e, 0)}
-            className="w-full h-2 bg-primary-200 rounded-lg appearance-none cursor-pointer"
-          />
-          <input
-            type="range"
-            min="0"
-            max="200"
-            step="10"
-            value={priceRange[1]}
-            onChange={(e) => handlePriceChange(e, 1)}
-            className="w-full h-2 bg-primary-200 rounded-lg appearance-none cursor-pointer"
-          />
-        </div>
-        <div className="flex items-center justify-between mt-2">
-          <div className="flex items-center">
-            <span className="text-xs text-secondary-800 mr-1">$</span>
-            <input
-              type="number"
-              value={priceRange[0]}
-              onChange={(e) => handlePriceChange(e, 0)}
-              className="w-16 px-2 py-1 text-xs border border-gray-200 rounded"
-              min="0"
-              max={priceRange[1]}
-            />
-          </div>
-          <span className="text-xs text-secondary-500">to</span>
-          <div className="flex items-center">
-            <span className="text-xs text-secondary-800 mr-1">$</span>
-            <input
-              type="number"
-              value={priceRange[1]}
-              onChange={(e) => handlePriceChange(e, 1)}
-              className="w-16 px-2 py-1 text-xs border border-gray-200 rounded"
-              min={priceRange[0]}
-              max="200"
-            />
+            <div className="flex items-center">
+              <svg className="w-4 h-4 mr-1.5 text-blue-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+              </svg>
+              <span className="text-sm font-medium text-gray-700">Price Range</span>
+            </div>
+            <svg className={`w-5 h-5 transition-transform ${expandedSection === 'price' ? 'transform rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          <div className={`mt-3 ${expandedSection === 'price' ? 'block' : 'sm:block hidden'}`}>
+            <div className="flex items-center justify-between mb-2 text-sm text-gray-600">
+              <span>${priceRange[0]}</span>
+              <span>${priceRange[1]}</span>
+            </div>
+            <div className="relative mb-4">
+              <div className="absolute inset-y-0 flex items-center pointer-events-none">
+                <div className="h-1 bg-blue-100 rounded-full" style={{ width: '100%' }}></div>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="200"
+                step="10"
+                value={priceRange[0]}
+                onChange={(e) => handlePriceChange(e, 0)}
+                className="absolute inset-y-0 w-full h-1 bg-transparent appearance-none pointer-events-auto"
+                aria-label="Minimum price"
+              />
+              <input
+                type="range"
+                min="0"
+                max="200"
+                step="10"
+                value={priceRange[1]}
+                onChange={(e) => handlePriceChange(e, 1)}
+                className="absolute inset-y-0 w-full h-1 bg-transparent appearance-none pointer-events-auto"
+                aria-label="Maximum price"
+              />
+            </div>
+            <div className="flex items-center space-x-4">
+              <div>
+                <label htmlFor="price-min" className="sr-only">Minimum price</label>
+                <div className="relative rounded-md">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500 sm:text-sm">$</span>
+                  </div>
+                  <input
+                    type="number"
+                    id="price-min"
+                    min="0"
+                    max={priceRange[1]}
+                    value={priceRange[0]}
+                    onChange={(e) => handlePriceChange(e, 0)}
+                    className="block w-full pl-8 pr-2 py-1 sm:text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+              </div>
+              <span className="text-gray-500">to</span>
+              <div>
+                <label htmlFor="price-max" className="sr-only">Maximum price</label>
+                <div className="relative rounded-md">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500 sm:text-sm">$</span>
+                  </div>
+                  <input
+                    type="number"
+                    id="price-max"
+                    min={priceRange[0]}
+                    max="200"
+                    value={priceRange[1]}
+                    onChange={(e) => handlePriceChange(e, 1)}
+                    className="block w-full pl-8 pr-2 py-1 sm:text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+        
+        {/* Sub-categories and Capacities */}
+        <div className="bg-gray-50 p-4 rounded-xl">
+          <button
+            onClick={() => toggleSection('subcategories')}
+            className="flex items-center justify-between w-full text-left"
+            aria-expanded={expandedSection === 'subcategories'}
+          >
+            <div className="flex items-center">
+              <svg className="w-4 h-4 mr-1.5 text-blue-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fillRule="evenodd" d="M5 4a3 3 0 00-3 3v6a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H5zm-1 9v-1h5v2H5a1 1 0 01-1-1zm7 1h4a1 1 0 001-1v-1h-5v2zm0-4h5V8h-5v2zM9 8H4v2h5V8z" clipRule="evenodd" />
+              </svg>
+              <span className="text-sm font-medium text-gray-700">Sub-categories</span>
+            </div>
+            <svg className={`w-5 h-5 transition-transform ${expandedSection === 'subcategories' ? 'transform rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          <div className={`mt-3 ${expandedSection === 'subcategories' || Object.values(selectedCategories).some(Boolean) ? 'block' : 'sm:block hidden'}`}>
+            <div className="flex flex-wrap gap-2">
+              {subcategories
+                .filter(subcategory => Object.keys(selectedCategories)
+                  .some(catId => selectedCategories[catId] && subcategory.parent.includes(catId)) || expandedSection === 'subcategories')
+                .map(subcategory => {
+                  const isActive = selectedSubcategories[subcategory.id] || false;
+                  return (
+                    <div key={subcategory.id} className="inline-block">
+                      <button
+                        onClick={() => handleSubcategoryChange(subcategory.id, !isActive)}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-300 ${
+                          isActive
+                            ? 'bg-gradient-to-r from-blue-400 to-blue-500 text-white shadow-sm'
+                            : 'text-gray-600 bg-white border border-gray-200 hover:bg-blue-50 hover:text-blue-600'
+                        }`}
+                        aria-pressed={isActive}
+                        aria-label={`Filter by ${subcategory.name}`}
+                      >
+                        {subcategory.name}
+                      </button>
+                    </div>
+                  );
+                })
+              }
+            </div>
+          </div>
+          
+          {/* Only show capacities if Power Banks is selected or the section is expanded */}
+          {(selectedCategories['power-banks'] || expandedSection === 'capacities') && (
+            <div className="mt-4">
+              <button
+                onClick={() => toggleSection('capacities')}
+                className="flex items-center justify-between w-full text-left mb-3"
+                aria-expanded={expandedSection === 'capacities'}
+              >
+                <div className="flex items-center">
+                  <svg className="w-4 h-4 mr-1.5 text-blue-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-sm font-medium text-gray-700">Power Capacity</span>
+                </div>
+                <svg className={`w-5 h-5 transition-transform ${expandedSection === 'capacities' ? 'transform rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              <div className={`${expandedSection === 'capacities' ? 'block' : 'sm:block hidden'}`}>
+                <div className="flex flex-wrap gap-2">
+                  {capacities.map(capacity => {
+                    const isActive = selectedCapacities[capacity.id] || false;
+                    return (
+                      <div key={capacity.id} className="inline-block">
+                        <button
+                          onClick={() => handleCapacityChange(capacity.id, !isActive)}
+                          className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-300 ${
+                            isActive
+                              ? 'bg-gradient-to-r from-blue-400 to-blue-500 text-white shadow-sm'
+                              : 'text-gray-600 bg-white border border-gray-200 hover:bg-blue-50 hover:text-blue-600'
+                          }`}
+                          aria-pressed={isActive}
+                          aria-label={`Filter by ${capacity.name}`}
+                        >
+                          {capacity.name}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-      
-      <button
-        className="w-full py-2 bg-secondary-100 hover:bg-secondary-200 text-secondary-800 font-medium text-sm rounded-md transition-colors duration-200"
-        onClick={() => {
-          // Reset all filters
-          setSelectedCategories({});
-          setSelectedSubcategories({});
-          setSelectedCapacities({});
-          setPriceRange([0, 200]);
-          updateFilters({}, {}, {}, [0, 200]);
-        }}
-      >
-        Clear All Filters
-      </button>
     </div>
   );
 }

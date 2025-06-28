@@ -1,9 +1,10 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     // Set to true immediately - we want the navbar to always have the "scrolled" appearance
@@ -18,6 +19,11 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
 
   return (
     <nav 
@@ -67,31 +73,47 @@ export default function Navbar() {
             <div className="flex items-center space-x-6">
               <Link 
                 to="/shop" 
-                className="text-sm font-medium transition-all duration-200 text-white hover:text-yellow-400 hover:scale-105 relative px-1 py-1 group"
+                className={`text-sm font-medium transition-all duration-200 text-white hover:text-yellow-400 hover:scale-105 relative px-1 py-1 group ${
+                  location.pathname === '/shop' ? 'text-yellow-400' : ''
+                }`}
               >
                 Shop
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-current group-hover:w-full transition-all duration-200"></span>
+                <span className={`absolute bottom-0 left-0 h-0.5 bg-current transition-all duration-200 ${
+                  location.pathname === '/shop' ? 'w-full' : 'w-0 group-hover:w-full'
+                }`}></span>
               </Link>
               <Link 
                 to="/new-arrivals" 
-                className="text-sm font-medium transition-all duration-200 text-white hover:text-yellow-400 hover:scale-105 relative px-1 py-1 group"
+                className={`text-sm font-medium transition-all duration-200 text-white hover:text-yellow-400 hover:scale-105 relative px-1 py-1 group ${
+                  location.pathname === '/new-arrivals' ? 'text-yellow-400' : ''
+                }`}
               >
                 New Arrivals
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-current group-hover:w-full transition-all duration-200"></span>
+                <span className={`absolute bottom-0 left-0 h-0.5 bg-current transition-all duration-200 ${
+                  location.pathname === '/new-arrivals' ? 'w-full' : 'w-0 group-hover:w-full'
+                }`}></span>
               </Link>
               <Link 
                 to="/deals" 
-                className="text-sm font-medium transition-all duration-200 text-white hover:text-yellow-400 hover:scale-105 relative px-1 py-1 group"
+                className={`text-sm font-medium transition-all duration-200 text-white hover:text-yellow-400 hover:scale-105 relative px-1 py-1 group ${
+                  location.pathname === '/deals' ? 'text-yellow-400' : ''
+                }`}
               >
                 Deals
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-current group-hover:w-full transition-all duration-200"></span>
+                <span className={`absolute bottom-0 left-0 h-0.5 bg-current transition-all duration-200 ${
+                  location.pathname === '/deals' ? 'w-full' : 'w-0 group-hover:w-full'
+                }`}></span>
               </Link>
               <Link 
                 to="/support" 
-                className="text-sm font-medium transition-all duration-200 text-white hover:text-yellow-400 hover:scale-105 relative px-1 py-1 group"
+                className={`text-sm font-medium transition-all duration-200 text-white hover:text-yellow-400 hover:scale-105 relative px-1 py-1 group ${
+                  location.pathname === '/support' ? 'text-yellow-400' : ''
+                }`}
               >
                 Support
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-current group-hover:w-full transition-all duration-200"></span>
+                <span className={`absolute bottom-0 left-0 h-0.5 bg-current transition-all duration-200 ${
+                  location.pathname === '/support' ? 'w-full' : 'w-0 group-hover:w-full'
+                }`}></span>
               </Link>
             </div>
 
@@ -126,13 +148,15 @@ export default function Navbar() {
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
               className="p-2 rounded-md text-white hover:bg-white/10"
+              aria-expanded={isMobileMenuOpen ? 'true' : 'false'}
+              aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
@@ -163,25 +187,41 @@ export default function Navbar() {
           </div>
           <Link 
             to="/shop" 
-            className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-white/10"
+            className={`block px-3 py-2 rounded-md text-base font-medium ${
+              location.pathname === '/shop' 
+                ? 'text-yellow-400 bg-blue-800/50' 
+                : 'text-white hover:bg-white/10'
+            }`}
           >
             Shop
           </Link>
           <Link 
             to="/new-arrivals" 
-            className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-white/10"
+            className={`block px-3 py-2 rounded-md text-base font-medium ${
+              location.pathname === '/new-arrivals' 
+                ? 'text-yellow-400 bg-blue-800/50' 
+                : 'text-white hover:bg-white/10'
+            }`}
           >
             New Arrivals
           </Link>
           <Link 
             to="/deals" 
-            className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-white/10"
+            className={`block px-3 py-2 rounded-md text-base font-medium ${
+              location.pathname === '/deals' 
+                ? 'text-yellow-400 bg-blue-800/50' 
+                : 'text-white hover:bg-white/10'
+            }`}
           >
             Deals
           </Link>
           <Link 
             to="/support" 
-            className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-white/10"
+            className={`block px-3 py-2 rounded-md text-base font-medium ${
+              location.pathname === '/support' 
+                ? 'text-yellow-400 bg-blue-800/50' 
+                : 'text-white hover:bg-white/10'
+            }`}
           >
             Support
           </Link>
