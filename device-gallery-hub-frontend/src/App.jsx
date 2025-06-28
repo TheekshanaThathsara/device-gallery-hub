@@ -18,17 +18,10 @@ import OrdersManagement from './components/admin/OrdersManagement';
 import InventoryManagement from './components/admin/InventoryManagement';
 import NewArrivalsPage from './components/shop/NewArrivalsPage';
 import DealsPage from './components/shop/DealsPage';
-import SupportPage from './components/support/SupportPage';
-import CheckoutPage from './components/checkout/CheckoutPage';
-import UserProfilePage from './components/user/UserProfilePage';
-import ScrollToTop from './components/utils/ScrollToTop';
 
 function App() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* ScrollToTop component ensures page starts from top on navigation */}
-      <ScrollToTop />
-      
       {/* Regular Store Routes */}
       <Routes>
         <Route path="/" element={
@@ -71,15 +64,6 @@ function App() {
             <Footer />
           </>
         } />
-        <Route path="/support" element={
-          <>
-            <Navbar />
-            <main className="pt-20"> {/* Added padding-top to account for fixed navbar */}
-              <SupportPage />
-            </main>
-            <Footer />
-          </>
-        } />
         <Route path="/product/:productId" element={
           <>
             <Navbar />
@@ -94,24 +78,6 @@ function App() {
             <Navbar />
             <main>
               <CartPage />
-            </main>
-            <Footer />
-          </>
-        } />
-        <Route path="/checkout" element={
-          <>
-            <Navbar />
-            <main className="pt-20"> {/* Added padding-top to account for fixed navbar */}
-              <CheckoutPage />
-            </main>
-            <Footer />
-          </>
-        } />
-        <Route path="/profile" element={
-          <>
-            <Navbar />
-            <main className="pt-20"> {/* Added padding-top to account for fixed navbar */}
-              <UserProfilePage />
             </main>
             <Footer />
           </>
