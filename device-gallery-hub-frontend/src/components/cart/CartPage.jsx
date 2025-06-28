@@ -1,71 +1,32 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import CartItem from './CartItem';
 import CartSummary from './CartSummary';
+import { useCart } from '../../context/CartContext';
+
+// Import some fallback images
+import chargerImg from '../../assets/images/charger.jpg';
+import datacableImg from '../../assets/images/datacable.jpg';
+import powerbankImg from '../../assets/images/powerbank.jpg';
+import earbudsImg from '../../assets/images/categories/earbuds.jpg';
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  // Mock data for the cart
-  useEffect(() => {
-    // This would be an API call in a real app
-    setTimeout(() => {
-      setCartItems([
-        {
-          id: 1,
-          name: 'Premium Type-C Fast Charging Cable',
-          price: 14.99,
-          oldPrice: 19.99,
-          discount: 25,
-          quantity: 1,
-          subcategory: 'Type-C',
-          image: 'https://images.unsplash.com/photo-1589996448606-27d38c70dd4c?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
-        },
-        {
-          id: 4,
-          name: 'Wireless Bluetooth Earbuds with Noise Cancellation',
-          price: 89.99,
-          oldPrice: 119.99,
-          discount: 25,
-          quantity: 2,
-          subcategory: 'Wireless',
-          image: 'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
-        },
-        {
-          id: 6,
-          name: 'Portable Power Bank 10000mAh',
-          price: 39.99,
-          oldPrice: 49.99,
-          discount: 20,
-          quantity: 1,
-          capacity: '10000mAh',
-          image: 'https://images.unsplash.com/photo-1583863618799-39d4041b2f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
-        }
-      ]);
-      setLoading(false);
-    }, 800);
-  }, []);
+  const { cartItems, updateQuantity, removeItem } = useCart();
+  const [loading, setLoading] = useState(false);
 
   const handleUpdateQuantity = (itemId, newQuantity) => {
-    setCartItems(prevItems => 
-      prevItems.map(item => 
-        item.id === itemId ? { ...item, quantity: newQuantity } : item
-      )
-    );
+    updateQuantity(itemId, newQuantity);
   };
 
   const handleRemoveItem = (itemId) => {
-    setCartItems(prevItems => 
-      prevItems.filter(item => item.id !== itemId)
-    );
+    removeItem(itemId);
   };
 
+  const navigate = useNavigate();
+  
   const handleCheckout = () => {
-    // In a real app, this would navigate to the checkout page
-    console.log('Proceeding to checkout with items:', cartItems);
-    alert('Proceeding to checkout!');
     // Navigate to checkout page
+    navigate('/checkout');
   };
 
   if (loading) {

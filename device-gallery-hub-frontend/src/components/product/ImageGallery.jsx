@@ -1,13 +1,12 @@
 import { useState } from 'react';
+import fallbackImg from '../../assets/images/datacable.jpg';
 
 export default function ImageGallery({ images }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // If no images are provided, use a placeholder
+  // If no images are provided, use a local fallback image
   if (!images || images.length === 0) {
-    images = [
-      'https://via.placeholder.com/600x600?text=No+Image+Available'
-    ];
+    images = [fallbackImg];
   }
 
   return (
@@ -19,6 +18,10 @@ export default function ImageGallery({ images }) {
             src={images[currentImageIndex]} 
             alt="Product image" 
             className="w-full h-full object-cover"
+            onError={(e) => { 
+              e.target.onerror = null;
+              e.target.src = fallbackImg;
+            }}
           />
         </div>
       </div>
@@ -39,7 +42,11 @@ export default function ImageGallery({ images }) {
               <img 
                 src={img} 
                 alt={`Product thumbnail ${index + 1}`}
-                className="w-full h-full object-cover" 
+                className="w-full h-full object-cover"
+                onError={(e) => { 
+                  e.target.onerror = null;
+                  e.target.src = fallbackImg;
+                }}
               />
             </button>
           ))}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useCart } from '../../context/CartContext';
 
 // Use existing images as fallbacks
 import chargerImg from '../../assets/images/charger.jpg'; 
@@ -10,6 +11,8 @@ export default function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
   const [imgSrc, setImgSrc] = useState(product.image);
   const [imgLoaded, setImgLoaded] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const { addToCart } = useCart();
   
   // Preload image
   useEffect(() => {
@@ -92,13 +95,35 @@ export default function ProductCard({ product }) {
         </div>
 
         <button 
-          className="w-full mt-3 py-2 bg-primary-500 hover:bg-primary-600 text-white text-sm font-medium rounded-md transition-colors duration-300 flex items-center justify-center gap-2"
+          className={`w-full mt-3 py-2 ${isAdding ? 'bg-green-500' : 'bg-primary-500 hover:bg-primary-600'} text-white text-sm font-medium rounded-md transition-colors duration-300 flex items-center justify-center gap-2`}
           aria-label={`Add ${product.name} to cart`}
+          disabled={isAdding}
+          onClick={(e) => {
+            e.preventDefault();
+            setIsAdding(true);
+            addToCart(product);
+            
+            // Show feedback for a brief moment
+            setTimeout(() => {
+              setIsAdding(false);
+            }, 800);
+          }}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-6.666zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
-          Add to Cart
+          {isAdding ? (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Added!
+            </>
+          ) : (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-6.666zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              Add to Cart
+            </>
+          )}
         </button>
       </div>
     </div>

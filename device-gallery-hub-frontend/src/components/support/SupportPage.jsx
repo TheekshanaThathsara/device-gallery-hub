@@ -1,31 +1,30 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-// Import product images for the FAQ section illustrations
-import earbud1 from '../../assets/images/products/earbuds1.jpg';
-import charger1 from '../../assets/images/products/charger1.jpg';
-import powerbank1 from '../../assets/images/products/powerbank1.jpg';
-
-const SupportPage = () => {
-  const [activeTab, setActiveTab] = useState('general');
-  const [activeAccordion, setActiveAccordion] = useState('faq-1');
-  const [contactFormData, setContactFormData] = useState({
+export default function SupportPage() {
+  const [activeCategory, setActiveCategory] = useState('faq');
+  const [expandedFaqs, setExpandedFaqs] = useState({});
+  const [ticketSubmitted, setTicketSubmitted] = useState(false);
+  const [formValues, setFormValues] = useState({
     name: '',
     email: '',
-    orderId: '',
-    subject: '',
+    orderNumber: '',
+    issueType: 'general-inquiry',
     message: ''
   });
 
-  // Toggle FAQ accordion
-  const toggleAccordion = (id) => {
-    setActiveAccordion(activeAccordion === id ? null : id);
+  // Toggle FAQ item expansion
+  const toggleFaq = (id) => {
+    setExpandedFaqs(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
   };
 
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setContactFormData((prev) => ({
+    setFormValues(prev => ({
       ...prev,
       [name]: value
     }));
@@ -34,519 +33,804 @@ const SupportPage = () => {
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    // In a real app, this would send the form data to a backend
-    alert('Thank you for contacting us! We will get back to you shortly.');
+    // In a real app, you would send this data to your backend
+    console.log('Support ticket submitted:', formValues);
+    setTicketSubmitted(true);
     // Reset form
-    setContactFormData({
+    setFormValues({
       name: '',
       email: '',
-      orderId: '',
-      subject: '',
+      orderNumber: '',
+      issueType: 'general-inquiry',
       message: ''
     });
+    
+    // Reset submission status after a delay
+    setTimeout(() => {
+      setTicketSubmitted(false);
+    }, 5000);
   };
 
+  // Support categories data
+  const categories = [
+    {
+      id: 'faq',
+      name: 'Frequently Asked Questions',
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      )
+    },
+    {
+      id: 'contact',
+      name: 'Contact Us',
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      )
+    },
+    {
+      id: 'shipping',
+      name: 'Shipping Information',
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+        </svg>
+      )
+    },
+    {
+      id: 'returns',
+      name: 'Returns & Refunds',
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z" />
+        </svg>
+      )
+    },
+    {
+      id: 'terms',
+      name: 'Terms of Service',
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      )
+    },
+    {
+      id: 'privacy',
+      name: 'Privacy Policy',
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+      )
+    },
+  ];
+
   // FAQ data
-  const faqs = {
-    general: [
-      {
-        id: 'faq-1',
-        question: 'How do I track my order?',
-        answer: 'You can track your order by logging into your account and visiting the "Orders" section. Alternatively, you can use the tracking number provided in your order confirmation email to track your package on our shipping partner\'s website.'
-      },
-      {
-        id: 'faq-2',
-        question: 'What payment methods do you accept?',
-        answer: 'We accept all major credit cards (Visa, MasterCard, American Express, Discover), PayPal, and Apple Pay. We also offer payment installment options through Klarna and Afterpay.'
-      },
-      {
-        id: 'faq-3',
-        question: 'How long does shipping take?',
-        answer: 'Standard shipping typically takes 3-5 business days. Express shipping is available for an additional fee and delivers within 1-2 business days. International shipping may take 7-14 business days depending on the destination.'
-      },
-      {
-        id: 'faq-4',
-        question: 'Do you ship internationally?',
-        answer: 'Yes, we ship to most countries worldwide. International shipping fees and delivery times vary depending on the destination. Please note that customs fees may apply for international orders.'
-      },
+  const faqData = [
+    {
+      id: 'faq-1',
+      question: 'How long does shipping take?',
+      answer: 'Standard shipping typically takes 3-5 business days within the continental United States. Express shipping options are available at checkout for 1-2 day delivery. International shipping times vary by location but generally take 7-14 business days.'
+    },
+    {
+      id: 'faq-2',
+      question: 'What is your return policy?',
+      answer: 'We offer a 30-day return policy for most items in new and unused condition. Some products have specific return windows and conditions. Please check our Returns & Refunds section for detailed information on specific product categories.'
+    },
+    {
+      id: 'faq-3',
+      question: 'How do I track my order?',
+      answer: 'Once your order ships, you\'ll receive a shipping confirmation email with a tracking number. You can also view your order status and tracking information in your account under "Order History".'
+    },
+    {
+      id: 'faq-4',
+      question: 'Do you offer international shipping?',
+      answer: 'Yes, we ship to most countries worldwide. International shipping costs and delivery times vary by location. Import duties and taxes may apply and are the responsibility of the customer.'
+    },
+    {
+      id: 'faq-5',
+      question: 'Are your products covered by warranty?',
+      answer: 'Yes, all our products come with a minimum 12-month warranty against manufacturing defects. Premium products may have extended warranty options. Check individual product pages for specific warranty information.'
+    },
+    {
+      id: 'faq-6',
+      question: 'How can I get technical support for my device?',
+      answer: 'Technical support is available through multiple channels. You can contact our support team via email, phone, or live chat. We also have a comprehensive knowledge base with troubleshooting guides for common issues.'
+    },
+    {
+      id: 'faq-7',
+      question: 'Do you offer price matching?',
+      answer: 'Yes, we offer price matching on identical products from major authorized retailers. Please contact our customer service with details of the competitor\'s price within 14 days of purchase to request a price match.'
+    },
+    {
+      id: 'faq-8',
+      question: 'What payment methods do you accept?',
+      answer: 'We accept all major credit cards (Visa, MasterCard, American Express, Discover), PayPal, Apple Pay, Google Pay, and Shop Pay. Financing options are available for qualifying purchases over $100.'
+    },
+  ];
+
+  // Shipping information content
+  const shippingInfo = {
+    domesticOptions: [
+      { name: 'Standard Shipping', time: '3-5 business days', cost: 'Free for orders over $35, otherwise $4.99' },
+      { name: 'Express Shipping', time: '2 business days', cost: '$9.99' },
+      { name: 'Next Day Shipping', time: '1 business day', cost: '$19.99' },
     ],
-    returns: [
-      {
-        id: 'faq-5',
-        question: 'What is your return policy?',
-        answer: 'We offer a 30-day return policy for most products. Items must be in their original packaging and in unused condition. Some products like earbuds have special hygiene restrictions, please see our detailed return policy for more information.'
-      },
-      {
-        id: 'faq-6',
-        question: 'How do I initiate a return?',
-        answer: 'To initiate a return, log into your account, go to "Order History," select the relevant order, and click "Return Items." Follow the instructions to generate a return label. If you checked out as a guest, you can use the link in your order confirmation email.'
-      },
-      {
-        id: 'faq-7',
-        question: 'How long does it take to process a refund?',
-        answer: 'Once we receive your returned item, it takes 1-2 business days for our quality team to inspect it. After approval, refunds are processed within 3-5 business days, though it may take longer for the funds to appear in your account depending on your financial institution.'
-      },
+    internationalOptions: [
+      { name: 'Standard International', time: '7-14 business days', cost: 'Starting at $14.99, varies by location' },
+      { name: 'Express International', time: '3-5 business days', cost: 'Starting at $29.99, varies by location' },
     ],
-    product: [
-      {
-        id: 'faq-8',
-        question: 'Do your products come with a warranty?',
-        answer: 'Yes, all our products come with a minimum 1-year manufacturer warranty. Premium products like high-end earbuds and power banks come with extended 2-year warranties. Warranty information is included in the product packaging.'
-      },
-      {
-        id: 'faq-9',
-        question: 'Are your chargers and cables certified?',
-        answer: 'Yes, all our charging products are certified. Our cables are MFi (Made for iPhone/iPad/iPod) certified for Apple products, and our chargers meet all safety and regulatory requirements, including UL, CE, and FCC certifications.'
-      },
-      {
-        id: 'faq-10',
-        question: 'How do I know which cable is compatible with my device?',
-        answer: 'Our product descriptions clearly indicate device compatibility. You can also use the "Compatibility Checker" tool on our site by selecting your device model. If you\'re still unsure, our support team can help you find the right cable for your device.'
-      },
+    additionalInfo: [
+      'All orders are processed within 1-2 business days.',
+      'Shipping times do not include processing time.',
+      'Business days are Monday-Friday, excluding holidays.',
+      'Tracking information is provided for all shipments.',
+      'International customers are responsible for any import duties and taxes.',
+    ]
+  };
+
+  // Returns policy content
+  const returnsInfo = {
+    generalPolicy: 'We offer a 30-day return window for most products in new, unused condition with original packaging and accessories.',
+    exceptions: [
+      'Earbuds and headphones: 14-day return policy for hygiene reasons',
+      'Sale items: May have limited return eligibility as noted during purchase',
+      'Custom or personalized items are not eligible for return',
     ],
+    process: [
+      'Initiate your return through your account or contact customer support',
+      'You\'ll receive a return shipping label via email',
+      'Package your return securely with all original materials',
+      'Drop off at any authorized shipping location',
+      'Refunds are processed within 5-7 business days after we receive the return',
+    ],
+    refundOptions: [
+      'Original payment method refund',
+      'Store credit (with 10% bonus value)',
+      'Exchange for another product',
+    ]
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 pb-16">
-      {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-blue-700 to-blue-600 py-16 px-4 sm:px-6 lg:px-8 mb-12">
-        <div className="relative z-10 max-w-7xl mx-auto">
+    <div className="bg-gradient-to-b from-white to-gray-50">
+      {/* Page header */}
+      <div className="relative bg-gradient-to-r from-blue-700 to-blue-600 py-16">
+        <div className="absolute inset-0 bg-blue-900 opacity-10 pattern-grid-lg"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
-            <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
-              How Can We Help You?
+            <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+              Customer Support
             </h1>
-            <p className="mt-6 max-w-3xl mx-auto text-xl text-blue-50">
-              Get answers to your questions, troubleshooting tips, and support from our team.
+            <p className="mt-4 text-xl text-blue-100 max-w-3xl mx-auto">
+              We're here to help with any questions or concerns about our products and services.
             </p>
           </div>
-          
-          {/* Search Box */}
-          <div className="mt-10 max-w-xl mx-auto">
-            <div className="relative">
-              <input
-                type="text"
-                className="w-full rounded-full px-8 py-4 border-0 shadow-lg focus:ring-2 focus:ring-blue-500 text-lg"
-                placeholder="Search for answers..."
-              />
-              <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                <svg className="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-blue-800 opacity-10">
-          <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M0 40L40 0M20 40L40 20M0 20L20 0" fill="none" stroke="white" strokeWidth="1" opacity="0.2" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
         </div>
       </div>
 
-      {/* Quick Links */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-xl shadow-md overflow-hidden transform transition hover:scale-105 hover:shadow-lg">
-            <div className="p-6 flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">Contact Us</h3>
-              <p className="mt-2 text-sm text-gray-500">Get in touch with our customer support team</p>
-              <button onClick={() => document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' })} className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors">
-                Reach Out
-              </button>
-            </div>
-          </div>
+      {/* Invisible anchor elements for navigation from other pages */}
+      <div id="faq" className="invisible h-0"></div>
+      <div id="shipping" className="invisible h-0"></div>
+      <div id="returns" className="invisible h-0"></div>
+      <div id="terms" className="invisible h-0"></div>
+      <div id="privacy" className="invisible h-0"></div>
 
-          <div className="bg-white rounded-xl shadow-md overflow-hidden transform transition hover:scale-105 hover:shadow-lg">
-            <div className="p-6 flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">Track Order</h3>
-              <p className="mt-2 text-sm text-gray-500">Check the status of your recent orders</p>
-              <Link to="/track-order" className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors">
-                Track Now
-              </Link>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-md overflow-hidden transform transition hover:scale-105 hover:shadow-lg">
-            <div className="p-6 flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">Returns</h3>
-              <p className="mt-2 text-sm text-gray-500">Initiate returns and check policies</p>
-              <Link to="/returns" className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors">
-                Return Items
-              </Link>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-md overflow-hidden transform transition hover:scale-105 hover:shadow-lg">
-            <div className="p-6 flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">Product Manuals</h3>
-              <p className="mt-2 text-sm text-gray-500">Download guides and documentation</p>
-              <Link to="/manuals" className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors">
-                View Manuals
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* FAQs Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold text-gray-900">Frequently Asked Questions</h2>
-          <p className="mt-4 text-lg text-gray-500">Find answers to common questions about our products and services.</p>
-        </div>
-
-        {/* FAQ tabs */}
-        <div className="flex flex-wrap justify-center mb-8 gap-2">
-          <button 
-            onClick={() => setActiveTab('general')}
-            className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
-              activeTab === 'general' 
-                ? 'bg-blue-600 text-white' 
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            General Questions
-          </button>
-          <button 
-            onClick={() => setActiveTab('returns')}
-            className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
-              activeTab === 'returns' 
-                ? 'bg-blue-600 text-white' 
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            Returns & Refunds
-          </button>
-          <button 
-            onClick={() => setActiveTab('product')}
-            className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
-              activeTab === 'product' 
-                ? 'bg-blue-600 text-white' 
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            Product Information
-          </button>
-        </div>
-
-        {/* FAQ Items with Accordion */}
-        <div className="max-w-3xl mx-auto">
-          {faqs[activeTab].map((faq) => (
-            <div
-              key={faq.id}
-              className="mb-4 border-b border-gray-200 pb-4"
-            >
+      {/* Main content */}
+      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        {/* Support category navigation */}
+        <div className="mb-10">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            {categories.map((category) => (
               <button
-                onClick={() => toggleAccordion(faq.id)}
-                className="flex justify-between items-center w-full text-left"
-              >
-                <h3 className="text-lg font-medium text-gray-900">{faq.question}</h3>
-                <span className="ml-6 flex-shrink-0">
-                  <svg
-                    className={`w-5 h-5 text-gray-500 transition-transform ${
-                      activeAccordion === faq.id ? 'transform rotate-180' : ''
-                    }`}
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </span>
-              </button>
-              <div
-                className={`mt-2 overflow-hidden transition-all duration-300 ${
-                  activeAccordion === faq.id ? 'max-h-96' : 'max-h-0'
+                key={category.id}
+                onClick={() => setActiveCategory(category.id)}
+                className={`flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-300 ${
+                  activeCategory === category.id
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'bg-white text-gray-700 hover:bg-blue-50 shadow'
                 }`}
               >
-                <p className="text-base text-gray-600">{faq.answer}</p>
+                <span className={`p-2 rounded-full ${
+                  activeCategory === category.id
+                    ? 'bg-blue-500'
+                    : 'bg-blue-100'
+                } mb-2`}>
+                  {category.icon}
+                </span>
+                <span className="text-sm font-medium text-center">{category.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Dynamic content based on active category */}
+        <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
+          {/* FAQ Section */}
+          {activeCategory === 'faq' && (
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Frequently Asked Questions</h2>
+              <div className="space-y-4">
+                {faqData.map((faq) => (
+                  <div key={faq.id} className="border border-gray-200 rounded-lg overflow-hidden">
+                    <button
+                      onClick={() => toggleFaq(faq.id)}
+                      className="w-full px-6 py-4 text-left bg-white hover:bg-gray-50 flex justify-between items-center focus:outline-none"
+                    >
+                      <span className="text-lg font-medium text-gray-800">{faq.question}</span>
+                      <svg 
+                        className={`w-5 h-5 text-gray-500 transform transition-transform duration-200 ${
+                          expandedFaqs[faq.id] ? 'rotate-180' : ''
+                        }`}
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    <div 
+                      className={`overflow-hidden transition-all duration-300 ${
+                        expandedFaqs[faq.id] ? 'max-h-96' : 'max-h-0'
+                      }`}
+                    >
+                      <div className="p-6 bg-gray-50 border-t border-gray-200">
+                        <p className="text-gray-700">{faq.answer}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-8 text-center">
+                <p className="text-gray-600">Can't find what you're looking for?</p>
+                <button 
+                  onClick={() => setActiveCategory('contact')}
+                  className="mt-2 inline-flex items-center text-blue-600 hover:text-blue-800"
+                >
+                  Contact our support team
+                  <svg className="ml-2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </button>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
+          )}
 
-      {/* Support Categories */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold text-gray-900">Support Categories</h2>
-          <p className="mt-4 text-lg text-gray-500">Browse support articles by product category</p>
-        </div>
+          {/* Contact Us Section */}
+          {activeCategory === 'contact' && (
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Contact Us</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {/* Contact Methods */}
+                <div className="md:col-span-1 space-y-6">
+                  <div className="bg-blue-50 p-5 rounded-lg">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2">Customer Support</h3>
+                    
+                    <div className="space-y-4">
+                      <div className="flex items-start">
+                        <div className="flex-shrink-0 mt-1">
+                          <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm font-medium text-gray-900">Email Us</p>
+                          <p className="text-sm text-gray-600">support@devicegalleryhub.com</p>
+                          <p className="mt-1 text-xs text-gray-500">We'll respond within 24 hours</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start">
+                        <div className="flex-shrink-0 mt-1">
+                          <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                          </svg>
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm font-medium text-gray-900">Phone Support</p>
+                          <p className="text-sm text-gray-600">1-800-DEVICES</p>
+                          <p className="mt-1 text-xs text-gray-500">Mon-Fri, 9 AM - 6 PM EST</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start">
+                        <div className="flex-shrink-0 mt-1">
+                          <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                          </svg>
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm font-medium text-gray-900">Live Chat</p>
+                          <p className="text-sm text-gray-600">Chat with our specialists</p>
+                          <p className="mt-1 text-xs text-gray-500">Available 24/7</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-50 p-5 rounded-lg">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2">Business Hours</h3>
+                    <ul className="space-y-2 text-sm">
+                      <li className="flex justify-between">
+                        <span className="text-gray-600">Monday - Friday:</span>
+                        <span className="font-medium text-gray-900">9:00 AM - 8:00 PM EST</span>
+                      </li>
+                      <li className="flex justify-between">
+                        <span className="text-gray-600">Saturday:</span>
+                        <span className="font-medium text-gray-900">10:00 AM - 6:00 PM EST</span>
+                      </li>
+                      <li className="flex justify-between">
+                        <span className="text-gray-600">Sunday:</span>
+                        <span className="font-medium text-gray-900">11:00 AM - 5:00 PM EST</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                
+                {/* Contact Form */}
+                <div className="md:col-span-2">
+                  {ticketSubmitted ? (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+                      <svg className="h-12 w-12 text-green-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <h3 className="mt-4 text-lg font-medium text-gray-900">Thank you for contacting us!</h3>
+                      <p className="mt-2 text-gray-600">We've received your message and will get back to you as soon as possible.</p>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                            Full Name
+                          </label>
+                          <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={formValues.name}
+                            onChange={handleInputChange}
+                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                            Email Address
+                          </label>
+                          <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formValues.email}
+                            onChange={handleInputChange}
+                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label htmlFor="orderNumber" className="block text-sm font-medium text-gray-700">
+                            Order Number (if applicable)
+                          </label>
+                          <input
+                            type="text"
+                            id="orderNumber"
+                            name="orderNumber"
+                            value={formValues.orderNumber}
+                            onChange={handleInputChange}
+                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="issueType" className="block text-sm font-medium text-gray-700">
+                            Issue Type
+                          </label>
+                          <select
+                            id="issueType"
+                            name="issueType"
+                            value={formValues.issueType}
+                            onChange={handleInputChange}
+                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          >
+                            <option value="general-inquiry">General Inquiry</option>
+                            <option value="order-status">Order Status</option>
+                            <option value="return-request">Return Request</option>
+                            <option value="technical-support">Technical Support</option>
+                            <option value="product-question">Product Question</option>
+                            <option value="billing-issue">Billing Issue</option>
+                            <option value="other">Other</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div>
+                        <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+                          Message
+                        </label>
+                        <textarea
+                          id="message"
+                          name="message"
+                          value={formValues.message}
+                          onChange={handleInputChange}
+                          rows={5}
+                          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          required
+                        />
+                      </div>
+                      <div className="text-right">
+                        <button
+                          type="submit"
+                          className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        >
+                          Submit Request
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white rounded-xl shadow-md overflow-hidden">
-            <div className="h-48 overflow-hidden">
-              <img 
-                src={earbud1} 
-                alt="Earbuds Support" 
-                className="w-full h-full object-cover transform transition duration-700 hover:scale-110"
-              />
-            </div>
-            <div className="p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Earbuds & Audio</h3>
-              <p className="text-gray-600 mb-4">Troubleshooting guides, pairing instructions, and care tips for audio products.</p>
-              <Link to="/support/category/earbuds" className="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
-                View guides
-                <svg className="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-md overflow-hidden">
-            <div className="h-48 overflow-hidden">
-              <img 
-                src={charger1} 
-                alt="Charging Solutions Support" 
-                className="w-full h-full object-cover transform transition duration-700 hover:scale-110"
-              />
-            </div>
-            <div className="p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Charging Solutions</h3>
-              <p className="text-gray-600 mb-4">Information about chargers, cables, compatibility, and troubleshooting charging issues.</p>
-              <Link to="/support/category/charging" className="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
-                View guides
-                <svg className="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-md overflow-hidden">
-            <div className="h-48 overflow-hidden">
-              <img 
-                src={powerbank1} 
-                alt="Power Banks Support" 
-                className="w-full h-full object-cover transform transition duration-700 hover:scale-110"
-              />
-            </div>
-            <div className="p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Power Banks</h3>
-              <p className="text-gray-600 mb-4">Usage instructions, maintenance tips, and answers to common power bank questions.</p>
-              <Link to="/support/category/powerbanks" className="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
-                View guides
-                <svg className="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Contact Form */}
-      <div id="contact-form" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-2">
-            {/* Contact Info */}
-            <div className="bg-gradient-to-br from-blue-700 to-blue-900 p-8 md:p-12 text-white">
-              <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
+          {/* Shipping Information */}
+          {activeCategory === 'shipping' && (
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Shipping Information</h2>
               
               <div className="space-y-8">
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 bg-blue-600 p-2 rounded-md">
-                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-lg font-medium">Phone</p>
-                    <p className="mt-1">+1 (800) 123-4567</p>
-                    <p className="mt-1 text-sm text-blue-200">Mon-Fri: 9am - 6pm EST</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 bg-blue-600 p-2 rounded-md">
-                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-lg font-medium">Email</p>
-                    <p className="mt-1">support@devicegalleryhub.com</p>
-                    <p className="mt-1 text-sm text-blue-200">We reply within 24 hours</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 bg-blue-600 p-2 rounded-md">
-                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-lg font-medium">Address</p>
-                    <p className="mt-1">123 Tech Avenue</p>
-                    <p className="mt-1">San Francisco, CA 94107</p>
+                {/* Domestic Shipping */}
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Domestic Shipping</h3>
+                  <div className="bg-white shadow overflow-hidden rounded-lg">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Shipping Method
+                          </th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Estimated Delivery Time
+                          </th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Cost
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {shippingInfo.domesticOptions.map((option, index) => (
+                          <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {option.name}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {option.time}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {option.cost}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
-              </div>
-
-              <div className="mt-12">
-                <h4 className="text-lg font-medium mb-4">Follow Us</h4>
-                <div className="flex space-x-4">
-                  <a href="#" className="bg-blue-600 p-2 rounded-full hover:bg-blue-500 transition-colors">
-                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
-                    </svg>
-                  </a>
-                  <a href="#" className="bg-blue-600 p-2 rounded-full hover:bg-blue-500 transition-colors">
-                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" />
-                    </svg>
-                  </a>
-                  <a href="#" className="bg-blue-600 p-2 rounded-full hover:bg-blue-500 transition-colors">
-                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                    </svg>
-                  </a>
-                  <a href="#" className="bg-blue-600 p-2 rounded-full hover:bg-blue-500 transition-colors">
-                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
-                    </svg>
-                  </a>
+                
+                {/* International Shipping */}
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">International Shipping</h3>
+                  <div className="bg-white shadow overflow-hidden rounded-lg">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Shipping Method
+                          </th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Estimated Delivery Time
+                          </th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Cost
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {shippingInfo.internationalOptions.map((option, index) => (
+                          <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {option.name}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {option.time}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {option.cost}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                
+                {/* Additional Information */}
+                <div className="bg-blue-50 p-6 rounded-lg">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">Additional Information</h3>
+                  <ul className="list-disc list-inside space-y-2 text-gray-700">
+                    {shippingInfo.additionalInfo.map((info, index) => (
+                      <li key={index}>{info}</li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </div>
+          )}
 
-            {/* Form */}
-            <div className="p-8 md:p-12">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Send us a message</h3>
+          {/* Returns & Refunds */}
+          {activeCategory === 'returns' && (
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Returns & Refunds</h2>
               
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-8">
+                {/* General Policy */}
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={contactFormData.name}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
-                    required
-                  />
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Our Return Policy</h3>
+                  <p className="text-gray-700 mb-4">{returnsInfo.generalPolicy}</p>
                 </div>
-
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={contactFormData.email}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
-                    required
-                  />
+                
+                {/* Policy Exceptions */}
+                <div className="bg-yellow-50 border border-yellow-100 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">Exceptions & Special Conditions</h3>
+                  <ul className="list-disc list-inside space-y-2 text-gray-700">
+                    {returnsInfo.exceptions.map((exception, index) => (
+                      <li key={index}>{exception}</li>
+                    ))}
+                  </ul>
                 </div>
-
+                
+                {/* Return Process */}
                 <div>
-                  <label htmlFor="orderId" className="block text-sm font-medium text-gray-700">Order ID (optional)</label>
-                  <input
-                    type="text"
-                    id="orderId"
-                    name="orderId"
-                    value={contactFormData.orderId}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
-                  />
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Return Process</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    {returnsInfo.process.map((step, index) => (
+                      <div key={index} className="bg-white p-4 rounded-lg shadow">
+                        <div className="bg-blue-100 text-blue-700 rounded-full w-8 h-8 flex items-center justify-center mb-3">
+                          {index + 1}
+                        </div>
+                        <p className="text-sm text-gray-600">{step}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-
+                
+                {/* Refund Options */}
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700">Subject</label>
-                  <select
-                    id="subject"
-                    name="subject"
-                    value={contactFormData.subject}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
-                    required
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Refund Options</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {returnsInfo.refundOptions.map((option, index) => (
+                      <div key={index} className="bg-white p-6 rounded-lg shadow text-center border-t-4 border-blue-500">
+                        <p className="font-medium text-gray-800">{option}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Need Help with a Return?</h3>
+                  <p className="text-gray-600 mb-4">
+                    Our customer service team is ready to assist you with any questions about returns or refunds.
+                  </p>
+                  <button 
+                    onClick={() => setActiveCategory('contact')}
+                    className="inline-flex items-center text-blue-600 hover:text-blue-800"
                   >
-                    <option value="">Select a subject</option>
-                    <option value="order-issue">Order Issue</option>
-                    <option value="product-question">Product Question</option>
-                    <option value="return-request">Return Request</option>
-                    <option value="technical-support">Technical Support</option>
-                    <option value="billing-issue">Billing Issue</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message</label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={5}
-                    value={contactFormData.message}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
-                    required
-                  ></textarea>
-                </div>
-
-                <div>
-                  <button
-                    type="submit"
-                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                  >
-                    Send Message
+                    Contact support
+                    <svg className="ml-2 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
                   </button>
                 </div>
-              </form>
+              </div>
+            </div>
+          )}
+
+          {/* Terms of Service */}
+          {activeCategory === 'terms' && (
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Terms of Service</h2>
+              
+              <div className="prose max-w-none text-gray-700">
+                <p>Last updated: June 1, 2025</p>
+                
+                <h3>1. Introduction</h3>
+                <p>
+                  Welcome to Device Gallery Hub. By accessing our website, you agree to these Terms of Service. 
+                  Please read them carefully. If you do not agree with these terms, please do not use our services.
+                </p>
+                
+                <h3>2. Using Our Services</h3>
+                <p>
+                  You must follow any policies made available to you within the Services. You may use our Services 
+                  only as permitted by law. We may suspend or stop providing our Services to you if you do not 
+                  comply with our terms or policies or if we are investigating suspected misconduct.
+                </p>
+                
+                <h3>3. Your Device Gallery Hub Account</h3>
+                <p>
+                  To use some of our services, you may need to create an account. You are responsible for the 
+                  activity that happens on or through your account. We recommend creating a strong password and 
+                  keeping it confidential.
+                </p>
+                
+                <h3>4. Privacy & Copyright Protection</h3>
+                <p>
+                  Our privacy policy explains how we treat your personal data and protect your privacy when you 
+                  use our Services. By using our Services, you agree that Device Gallery Hub can use such data in 
+                  accordance with our privacy policies.
+                </p>
+                
+                <h3>5. Your Content in Our Services</h3>
+                <p>
+                  Our Services allow you to upload, submit, store, send or receive content. You retain ownership 
+                  of any intellectual property rights that you hold in that content.
+                </p>
+                
+                <h3>6. Software in Our Services</h3>
+                <p>
+                  Device Gallery Hub gives you a personal, worldwide, royalty-free, non-assignable and non-exclusive 
+                  license to use the software provided to you as part of the Services. You may not copy, modify, 
+                  distribute, sell, or lease any part of our Services or included software.
+                </p>
+                
+                <h3>7. Modifying & Terminating Our Services</h3>
+                <p>
+                  We are constantly changing and improving our Services. We may add or remove functionalities or 
+                  features, and we may suspend or stop a Service altogether. You can stop using our Services at 
+                  any time, although we'll be sorry to see you go.
+                </p>
+                
+                <h3>8. Our Warranties & Disclaimers</h3>
+                <p>
+                  We provide our Services using a commercially reasonable level of skill and care. But there are 
+                  certain things that we don't promise about our Services.
+                </p>
+                
+                <h3>9. Liability for Our Services</h3>
+                <p>
+                  When permitted by law, Device Gallery Hub, and Device Gallery Hub's suppliers and distributors, 
+                  will not be responsible for lost profits, revenues, or data, financial losses or indirect, 
+                  special, consequential, exemplary, or punitive damages.
+                </p>
+                
+                <h3>10. About These Terms</h3>
+                <p>
+                  We may modify these terms or any additional terms that apply to a Service to, for example, 
+                  reflect changes to the law or changes to our Services. We'll post notice of modifications to 
+                  these terms on this page. We'll post notice of modified additional terms in the applicable 
+                  Service. Changes will not apply retroactively and will become effective 30 days after they 
+                  are posted.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Privacy Policy */}
+          {activeCategory === 'privacy' && (
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Privacy Policy</h2>
+              
+              <div className="prose max-w-none text-gray-700">
+                <p>Last updated: June 1, 2025</p>
+                
+                <h3>1. Introduction</h3>
+                <p>
+                  This Privacy Policy describes how Device Gallery Hub ("we," "us," or "our") collects, uses, 
+                  and discloses your personal information when you visit our website, make a purchase, or interact 
+                  with us in any other way.
+                </p>
+                
+                <h3>2. Information We Collect</h3>
+                <p>We collect several types of information from and about users of our Website, including:</p>
+                <ul>
+                  <li>Personal information (such as name, email address, postal address, phone number)</li>
+                  <li>Order information (such as products purchased, shipping details, payment information)</li>
+                  <li>Technical information (such as IP address, browser type, device information)</li>
+                  <li>Usage information (such as pages visited, time spent on the website)</li>
+                </ul>
+                
+                <h3>3. How We Use Your Information</h3>
+                <p>We use the information we collect for various purposes, including to:</p>
+                <ul>
+                  <li>Process and fulfill your orders</li>
+                  <li>Provide customer support</li>
+                  <li>Send you order confirmations, updates, and marketing communications</li>
+                  <li>Improve our website and products</li>
+                  <li>Detect and prevent fraud</li>
+                  <li>Comply with legal obligations</li>
+                </ul>
+                
+                <h3>4. How We Share Your Information</h3>
+                <p>
+                  We may share your personal information with service providers who help us with our business 
+                  activities, such as payment processors, shipping carriers, and marketing services. We may also 
+                  share your information as required by law or in connection with a business transaction such as 
+                  a merger or acquisition.
+                </p>
+                
+                <h3>5. Your Choices</h3>
+                <p>You have certain choices about how we use your information:</p>
+                <ul>
+                  <li>You can opt out of receiving marketing emails</li>
+                  <li>You can update or correct your account information</li>
+                  <li>You can request access to, deletion of, or restriction on the use of your personal information</li>
+                  <li>You can disable cookies through your browser settings</li>
+                </ul>
+                
+                <h3>6. Security</h3>
+                <p>
+                  We implement appropriate technical and organizational measures to protect your personal information 
+                  against unauthorized access, loss, or misuse. However, no method of transmission over the Internet 
+                  or electronic storage is 100% secure.
+                </p>
+                
+                <h3>7. Children's Privacy</h3>
+                <p>
+                  Our website is not intended for children under the age of 13, and we do not knowingly collect 
+                  personal information from children under 13.
+                </p>
+                
+                <h3>8. International Transfers</h3>
+                <p>
+                  Your information may be transferred to, and processed in, countries other than the country in 
+                  which you are a resident. These countries may have data protection laws that are different from 
+                  the laws of your country.
+                </p>
+                
+                <h3>9. Changes to This Privacy Policy</h3>
+                <p>
+                  We may update our Privacy Policy from time to time. We will notify you of any changes by posting 
+                  the new Privacy Policy on this page and updating the "Last updated" date.
+                </p>
+                
+                <h3>10. Contact Us</h3>
+                <p>
+                  If you have any questions about this Privacy Policy or our privacy practices, please contact us at 
+                  privacy@devicegalleryhub.com.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Help center promotion */}
+        <div className="mt-16 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-6 md:p-10 text-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 rounded-full bg-white opacity-10"></div>
+          <div className="absolute bottom-0 left-0 -mb-8 -ml-8 w-64 h-64 rounded-full bg-white opacity-10"></div>
+          <div className="relative z-10">
+            <div className="flex flex-wrap items-center justify-between">
+              <div className="w-full md:w-2/3 mb-6 md:mb-0">
+                <h2 className="text-2xl md:text-3xl font-bold">Need additional help?</h2>
+                <p className="mt-2 text-blue-100">
+                  Our comprehensive help center has guides, tutorials, and answers to common questions.
+                </p>
+              </div>
+              <div className="w-full md:w-auto">
+                <Link
+                  to="/help-center"
+                  className="inline-block bg-white text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-lg font-medium shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                >
+                  Visit Help Center
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Live Chat CTA */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <button className="flex items-center bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-3 rounded-full shadow-lg transition-colors">
-          <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-          </svg>
-          Live Chat
-        </button>
       </div>
     </div>
   );
-};
-
-export default SupportPage;
+}

@@ -36,6 +36,22 @@ export default function CartItem({ item, onUpdateQuantity, onRemove }) {
           src={item.image} 
           alt={item.name} 
           className="w-full h-full object-cover"
+          onError={(e) => { 
+            e.target.onerror = null;
+            
+            // Try to determine the appropriate fallback based on product type/category
+            if (item.subcategory && item.subcategory.toLowerCase().includes('cable')) {
+              e.target.src = '/src/assets/images/datacable.jpg';
+            } else if (item.subcategory && item.subcategory.toLowerCase().includes('earbuds')) {
+              e.target.src = '/src/assets/images/categories/earbuds.jpg';
+            } else if (item.subcategory && item.subcategory.toLowerCase().includes('power')) {
+              e.target.src = '/src/assets/images/powerbank.jpg';
+            } else if (item.subcategory && item.subcategory.toLowerCase().includes('charger')) {
+              e.target.src = '/src/assets/images/charger.jpg';
+            } else {
+              e.target.src = '/src/assets/images/products/cable1.jpg';
+            }
+          }}
         />
       </Link>
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from './ProductCard';
+import { useCart } from '../../context/CartContext';
 
 // Import local images
 import chargerImg from '../../assets/images/charger.jpg';
@@ -317,6 +318,7 @@ export default function NewArrivalsPage() {
   const [filteredProducts, setFilteredProducts] = useState(newArrivals);
   const [fadeIn, setFadeIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const { addToCart } = useCart();
   
   // Extract unique categories
   const categories = ['all', ...new Set(newArrivals.map(product => product.category))];

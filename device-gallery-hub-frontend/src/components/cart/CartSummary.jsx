@@ -1,4 +1,7 @@
-export default function CartSummary({ cartItems, onCheckout }) {
+import { useCart } from '../../context/CartContext';
+
+export default function CartSummary({ onCheckout }) {
+  const { cartItems } = useCart();
   // Calculate subtotal
   const subtotal = cartItems.reduce((total, item) => {
     return total + (item.price * item.quantity);
@@ -69,7 +72,7 @@ export default function CartSummary({ cartItems, onCheckout }) {
         className="w-full mt-6 bg-primary-600 hover:bg-primary-700 text-white py-3 px-4 rounded-md font-medium transition-colors flex items-center justify-center"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
         </svg>
         Proceed to Checkout
       </button>
