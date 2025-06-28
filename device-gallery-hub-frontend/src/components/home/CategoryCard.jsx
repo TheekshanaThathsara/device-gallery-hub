@@ -50,23 +50,23 @@ export default function CategoryCard({ title, imageUrl, description, fallbackIma
             {/* Product-specific floating elements to enhance the image */}
             {title === 'Power Banks' && (
               <>
-                <div className="absolute bottom-4 right-4 z-10 w-16 h-8 bg-blue-600/80 rounded-md blur-sm animate-pulse"></div>
-                <div className="absolute top-4 left-4 z-10 w-6 h-6 bg-green-400/50 rounded-full blur-sm animate-pulse" style={{animationDuration: '3s'}}></div>
-                <div className="absolute top-1/3 left-1/4 z-10 text-white text-xs font-bold">20000<span className="text-[8px]">mAh</span></div>
+                {/* <div className="absolute bottom-4 right-4 z-10 w-16 h-8 bg-blue-600/80 rounded-md blur-sm animate-pulse"></div> */}
+                {/* <div className="absolute top-4 left-4 z-10 w-6 h-6 bg-green-400/50 rounded-full blur-sm animate-pulse" style={{animationDuration: '3s'}}></div> */}
+                {/* <div className="absolute top-1/3 left-1/4 z-10 text-white text-xs font-bold">20000<span className="text-[8px]">mAh</span></div> */}
               </>
             )}
             {title === 'Chargers' && (
               <>
-                <div className="absolute top-1/4 right-1/3 z-10 w-3 h-3 bg-green-400 rounded-full blur-sm animate-ping"></div>
-                <div className="absolute bottom-1/3 right-1/4 z-10 w-2 h-2 bg-blue-400 rounded-full blur-sm animate-ping" style={{animationDelay: '1s'}}></div>
-                <div className="absolute bottom-6 right-6 z-10 text-white text-xs font-bold">65W</div>
+                {/* <div className="absolute top-1/4 right-1/3 z-10 w-3 h-3 bg-green-400 rounded-full blur-sm animate-ping"></div> */}
+                {/* <div className="absolute bottom-1/3 right-1/4 z-10 w-2 h-2 bg-blue-400 rounded-full blur-sm animate-ping" style={{animationDelay: '1s'}}></div> */}
+                {/* <div className="absolute bottom-6 right-6 z-10 text-white text-xs font-bold">65W</div> */}
               </>
             )}
             {title === 'Data Cables' && (
               <>
-                <div className="absolute bottom-1/3 left-1/4 z-10 w-16 h-1 bg-blue-300/70 blur-sm"></div>
-                <div className="absolute top-1/4 right-1/3 z-10 w-10 h-1 bg-primary-400/60 blur-sm"></div>
-                <div className="absolute bottom-6 left-6 z-10 text-white text-xs font-bold">Type-C</div>
+                {/* <div className="absolute bottom-1/3 left-1/4 z-10 w-16 h-1 bg-blue-300/70 blur-sm"></div>
+                <div className="absolute top-1/4 right-1/3 z-10 w-10 h-1 bg-primary-400/60 blur-sm"></div> */}
+                {/* <div className="absolute bottom-6 left-6 z-10 text-white text-xs font-bold">Type-C</div> */}
               </>
             )}
           </div>

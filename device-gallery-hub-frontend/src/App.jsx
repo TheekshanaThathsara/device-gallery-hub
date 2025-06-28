@@ -16,6 +16,9 @@ import ProductsManagement from './components/admin/ProductsManagement';
 import ProductForm from './components/admin/ProductForm';
 import OrdersManagement from './components/admin/OrdersManagement';
 import InventoryManagement from './components/admin/InventoryManagement';
+import NewArrivalsPage from './components/shop/NewArrivalsPage';
+import DealsPage from './components/shop/DealsPage';
+import SupportPage from './components/support/SupportPage';
 
 function App() {
   return (
@@ -40,6 +43,33 @@ function App() {
             <Navbar />
             <main>
               <ProductListingPage />
+            </main>
+            <Footer />
+          </>
+        } />
+        <Route path="/new-arrivals" element={
+          <>
+            <Navbar />
+            <main className="pt-20"> {/* Added padding-top to account for fixed navbar */}
+              <NewArrivalsPage />
+            </main>
+            <Footer />
+          </>
+        } />
+        <Route path="/deals" element={
+          <>
+            <Navbar />
+            <main className="pt-20"> {/* Added padding-top to account for fixed navbar */}
+              <DealsPage />
+            </main>
+            <Footer />
+          </>
+        } />
+        <Route path="/support" element={
+          <>
+            <Navbar />
+            <main className="pt-20"> {/* Added padding-top to account for fixed navbar */}
+              <SupportPage />
             </main>
             <Footer />
           </>
