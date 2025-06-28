@@ -46,6 +46,14 @@ const SupportPage = () => {
     });
   };
 
+  // Add invisible anchor elements for section navigation
+  const sections = [
+    { id: 'shipping', title: 'Shipping Information' },
+    { id: 'returns', title: 'Returns & Refunds' },
+    { id: 'terms', title: 'Terms of Service' },
+    { id: 'privacy', title: 'Privacy Policy' }
+  ];
+
   // FAQ data
   const faqs = {
     general: [
@@ -216,7 +224,7 @@ const SupportPage = () => {
       </div>
 
       {/* FAQs Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+      <div id="faq" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-bold text-gray-900">Frequently Asked Questions</h2>
           <p className="mt-4 text-lg text-gray-500">Find answers to common questions about our products and services.</p>
@@ -535,6 +543,17 @@ const SupportPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Invisible anchors for footer navigation */}
+      {sections.map(section => (
+        <div 
+          key={section.id} 
+          id={section.id} 
+          className="scroll-mt-24" // Add padding to account for fixed header
+          style={{ position: 'relative', top: '-100px', visibility: 'hidden' }}
+          aria-hidden="true"
+        />
+      ))}
 
       {/* Live Chat CTA */}
       <div className="fixed bottom-6 right-6 z-50">
