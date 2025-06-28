@@ -22,6 +22,7 @@ import SupportPage from './components/support/SupportPage';
 import HelpCenterPage from './components/help/HelpCenterPage';
 import { CartProvider } from './context/CartContext';
 import CheckoutPage from './components/checkout/CheckoutPage';
+import UserProfilePage from './components/user/UserProfilePage';
 
 function App() {
   return (
@@ -111,6 +112,15 @@ function App() {
               <Navbar />
               <main className="pt-20"> {/* Added padding-top to account for fixed navbar */}
                 <CheckoutPage />
+              </main>
+              <Footer />
+            </>
+          } />
+          <Route path="/profile" element={
+            <>
+              <Navbar />
+              <main className="pt-20"> {/* Added padding-top to account for fixed navbar */}
+                <UserProfilePage />
               </main>
               <Footer />
             </>
