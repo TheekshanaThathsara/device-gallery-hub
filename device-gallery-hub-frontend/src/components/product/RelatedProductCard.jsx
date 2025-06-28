@@ -1,13 +1,58 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+// Use existing images as fallbacks
+import chargerImg from '../../assets/images/charger.jpg'; 
+import datacableImg from '../../assets/images/datacable.jpg';
+import powerbankImg from '../../assets/images/powerbank.jpg';
+
 export default function RelatedProductCard({ product }) {
+  const [imgSrc, setImgSrc] = useState(product.image);
+  const [imgLoaded, setImgLoaded] = useState(false);
+
+  // Preload image
+  useEffect(() => {
+    const img = new Image();
+    img.src = product.image;
+    img.onload = () => {
+      setImgSrc(product.image);
+      setImgLoaded(true);
+    };
+    img.onerror = () => {
+      // Use appropriate fallback image based on category
+      if (product.category === 'cables') {
+        setImgSrc(datacableImg);
+      } else if (product.category === 'power') {
+        setImgSrc(powerbankImg);
+      } else {
+        setImgSrc(chargerImg);
+      }
+      setImgLoaded(true);
+    };
+  }, [product.image, product.category]);
+
   return (
     <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 h-full flex flex-col">
       <Link to={`/product/${product.id}`} className="block relative overflow-hidden aspect-square">
+        {!imgLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+            <div className="w-6 h-6 border-3 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
         <img 
-          src={product.image} 
+          src={imgSrc} 
           alt={product.name} 
-          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" 
+          className={`w-full h-full object-cover transition-transform duration-500 hover:scale-105 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`} 
+          onError={(e) => {
+            // Fallback handling
+            if (product.category === 'cables') {
+              setImgSrc(datacableImg);
+            } else if (product.category === 'power') {
+              setImgSrc(powerbankImg);
+            } else {
+              setImgSrc(chargerImg);
+            }
+          }}
         />
         {product.discount > 0 && (
           <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md">

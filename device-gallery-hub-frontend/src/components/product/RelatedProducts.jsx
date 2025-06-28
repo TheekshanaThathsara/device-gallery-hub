@@ -1,148 +1,222 @@
 import { useState, useEffect, useRef } from 'react';
 import RelatedProductCard from './RelatedProductCard';
 
+// Import local images
+import cable1Img from '../../assets/images/products/cable1.jpg';
+import cable2Img from '../../assets/images/products/cable2.jpg';
+import cable3Img from '../../assets/images/products/cable3.jpg';
+import cable4Img from '../../assets/images/products/cable4.jpeg';
+import cable5Img from '../../assets/images/products/cable5.jpeg';
+import powerbank1Img from '../../assets/images/products/powerbank1.jpg';
+import powerbank2Img from '../../assets/images/products/powerbank2.jpg';
+import powerbank3Img from '../../assets/images/products/powerbank3.jpeg';
+import charger1Img from '../../assets/images/products/charger1.jpg';
+import charger2Img from '../../assets/images/products/charger2.jpg';
+import charger3Img from '../../assets/images/products/charger3.jpeg';
+import handsfree1Img from '../../assets/images/products/handsfree1.jpg';
+import handsfree2Img from '../../assets/images/products/handsfree2.jpg';
+import earbuds1Img from '../../assets/images/products/earbuds1.jpg';
+import earbuds2Img from '../../assets/images/products/earbuds2.jpeg';
+import earbuds3Img from '../../assets/images/products/earbuds3.jpg';
+import earbuds4Img from '../../assets/images/products/earbuds4.jpg';
+
+// Mock products database with categories aligned with ProductDetailsPage
+const allProducts = [
+  {
+    id: 101,
+    name: 'Next Gen Type-C Fast Charging Cable',
+    category: 'cables',
+    subcategory: 'Type-C',
+    price: 16.99,
+    oldPrice: 21.99,
+    discount: 22,
+    image: cable1Img,
+  },
+  {
+    id: 102,
+    name: 'Braided Lightning Cable Pro',
+    category: 'cables',
+    subcategory: 'Lightning',
+    price: 14.99,
+    oldPrice: 19.99,
+    discount: 25,
+    image: cable2Img,
+  },
+  {
+    id: 103,
+    name: 'Wireless Earbuds Pro Max',
+    category: 'audio',
+    subcategory: 'Earbuds',
+    price: 89.99,
+    oldPrice: 119.99,
+    discount: 25,
+    image: earbuds1Img,
+  },
+  {
+    id: 104,
+    name: 'Premium Sport Earphones',
+    category: 'audio',
+    subcategory: 'Earbuds',
+    price: 59.99,
+    oldPrice: 79.99,
+    discount: 25,
+    image: earbuds2Img,
+  },
+  {
+    id: 105,
+    name: '25000mAh Power Bank with PD',
+    category: 'power',
+    subcategory: 'Power Banks',
+    price: 49.99,
+    oldPrice: 69.99,
+    discount: 28,
+    image: powerbank1Img,
+  },
+  {
+    id: 106,
+    name: '65W GaN Fast Charger',
+    category: 'chargers',
+    subcategory: 'Wall Chargers',
+    price: 39.99,
+    oldPrice: 59.99,
+    discount: 33,
+    image: charger1Img,
+  },
+  {
+    id: 107,
+    name: 'Premium Car Handsfree Kit',
+    category: 'handsfree',
+    subcategory: 'Car Accessories',
+    price: 34.99,
+    oldPrice: 44.99,
+    discount: 22,
+    image: handsfree1Img,
+  },
+  {
+    id: 108,
+    name: 'MagSafe Wireless Charger Pro',
+    category: 'chargers',
+    subcategory: 'Wireless',
+    price: 44.99,
+    oldPrice: 54.99,
+    discount: 18,
+    image: charger2Img,
+  },
+  {
+    id: 109,
+    name: '10000mAh Slim Power Bank',
+    category: 'power',
+    subcategory: 'Power Banks',
+    price: 29.99,
+    oldPrice: 39.99,
+    discount: 25,
+    image: powerbank2Img,
+  },
+  {
+    id: 110,
+    name: 'Premium Tangle-Free USB Cable',
+    category: 'cables',
+    subcategory: 'USB',
+    price: 15.99,
+    oldPrice: 19.99,
+    discount: 20,
+    image: cable3Img,
+  },
+  {
+    id: 111,
+    name: 'Reinforced Gaming USB-C Cable',
+    category: 'cables',
+    subcategory: 'Gaming',
+    price: 17.99,
+    oldPrice: 22.99,
+    discount: 22,
+    image: cable4Img,
+  },
+  {
+    id: 112,
+    name: 'Premium Noise-Cancelling Earbuds',
+    category: 'audio',
+    subcategory: 'Earbuds',
+    price: 79.99,
+    oldPrice: 99.99,
+    discount: 20,
+    image: earbuds3Img,
+  }
+];
+
 export default function RelatedProducts({ currentProductId, category }) {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const scrollContainer = useRef(null);
 
-  // Simulate fetching related products - in a real app, this would be an API call
+  // Find related products based on category
   useEffect(() => {
-    // This is mock data - in a real app, you'd fetch from an API
-    const mockProducts = [
-      {
-        id: 101,
-        name: 'Fast Charging Type-C Cable',
-        category: 'data-cables',
-        subcategory: 'Type-C',
-        price: 14.99,
-        oldPrice: 19.99,
-        discount: 25,
-        image: 'https://images.unsplash.com/photo-1589996448606-27d38c70dd4c?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
-      },
-      {
-        id: 102,
-        name: 'Premium Lightning Cable',
-        category: 'data-cables',
-        subcategory: 'Lightning',
-        price: 19.99,
-        oldPrice: null,
-        discount: 0,
-        image: 'https://images.unsplash.com/photo-1609692814859-8cb88f72a3b1?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
-      },
-      {
-        id: 103,
-        name: 'Wireless Earbuds with Case',
-        category: 'earbuds',
-        subcategory: 'Wireless',
-        price: 79.99,
-        oldPrice: 99.99,
-        discount: 20,
-        image: 'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
-      },
-      {
-        id: 104,
-        name: '10000mAh Power Bank',
-        category: 'power-banks',
-        subcategory: null,
-        capacity: '10000mah',
-        price: 34.99,
-        oldPrice: 44.99,
-        discount: 22,
-        image: 'https://images.unsplash.com/photo-1583863618799-39d4041b2f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
-      },
-      {
-        id: 105,
-        name: 'Type-C Fast Charger',
-        category: 'chargers',
-        subcategory: 'Type-C',
-        price: 24.99,
-        oldPrice: null,
-        discount: 0,
-        image: 'https://images.unsplash.com/photo-1618478594486-c65b899c4936?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
-      },
-      {
-        id: 106,
-        name: 'Premium Micro USB Cable',
-        category: 'data-cables',
-        subcategory: 'Micro',
-        price: 9.99,
-        oldPrice: 12.99,
-        discount: 23,
-        image: 'https://images.unsplash.com/photo-1583863788434-e62bf5cd4c1c?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
-      },
-    ];
-
-    // Filter out the current product and limit to related category products
-    const filtered = mockProducts
-      .filter(product => product.id !== currentProductId)
-      .filter(product => !category || product.category === category)
-      .slice(0, 6);
-
-    setRelatedProducts(filtered);
+    // Filter products in same category, exclude current product
+    const related = allProducts
+      .filter(p => {
+        return p.category === category && p.id.toString() !== currentProductId.toString();
+      })
+      .slice(0, 6); // Limit to 6 products
+    
+    setRelatedProducts(related);
   }, [currentProductId, category]);
 
   const scroll = (direction) => {
-    const container = scrollContainer.current;
-    if (container) {
-      const scrollAmount = direction === 'left' ? -300 : 300;
-      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    if (scrollContainer.current) {
+      const { current } = scrollContainer;
+      const scrollAmount = direction === 'left' ? -280 : 280;
+      current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
   if (relatedProducts.length === 0) {
-    return null;
+    return null; // Don't show the section if no related products
   }
-
+  
   return (
-    <section className="py-8 bg-secondary-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-secondary-800">You may also like</h2>
-          <div className="flex space-x-2">
-            <button 
-              onClick={() => scroll('left')}
-              className="p-2 rounded-full border border-gray-200 bg-white text-secondary-600 hover:bg-secondary-50 hover:text-primary-600"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <button 
-              onClick={() => scroll('right')}
-              className="p-2 rounded-full border border-gray-200 bg-white text-secondary-600 hover:bg-secondary-50 hover:text-primary-600"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div 
-          ref={scrollContainer}
-          className="flex overflow-x-auto pb-4 space-x-4 scrollbar-hide"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+    <div className="bg-white rounded-xl shadow-sm overflow-hidden p-6">
+      <h2 className="text-xl font-bold text-secondary-900 mb-6">Related Products</h2>
+      
+      <div className="relative">
+        {/* Scroll controls */}
+        <button
+          onClick={() => scroll('left')}
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-sm rounded-full p-2 shadow-md text-primary-700 hover:text-primary-800 hover:bg-white"
         >
-          {relatedProducts.map((product) => (
-            <div key={product.id} className="flex-none w-[220px] md:w-[250px]">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        <div
+          ref={scrollContainer}
+          className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide snap-x scroll-pl-6 scroll-pr-6"
+          style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          }}
+        >
+          {relatedProducts.map(product => (
+            <div key={product.id} className="flex-shrink-0 w-[260px] snap-start">
               <RelatedProductCard product={product} />
             </div>
           ))}
         </div>
+        
+        <button
+          onClick={() => scroll('right')}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-sm rounded-full p-2 shadow-md text-primary-700 hover:text-primary-800 hover:bg-white"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
-    </section>
+      
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+    </div>
   );
 }
-
-// Add custom CSS to hide scrollbar
-const style = document.createElement('style');
-style.textContent = `
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-`;
-document.head.appendChild(style);

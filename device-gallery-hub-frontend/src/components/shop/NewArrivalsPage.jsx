@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ProductCard from './ProductCard';
 
 // Import local images
@@ -317,6 +317,12 @@ export default function NewArrivalsPage() {
   const [filteredProducts, setFilteredProducts] = useState(newArrivals);
   const [fadeIn, setFadeIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+  
+  // Handle click on product card to navigate to product details
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
   
   // Extract unique categories
   const categories = ['all', ...new Set(newArrivals.map(product => product.category))];
@@ -579,12 +585,21 @@ export default function NewArrivalsPage() {
               filteredProducts.map((product, index) => (
                 <div 
                   key={product.id}
-                  className="transition-all duration-500 h-full"
+                  className="transition-all duration-500 h-full cursor-pointer"
                   style={{
                     opacity: fadeIn ? 1 : 0,
                     transform: fadeIn ? 'translateY(0)' : 'translateY(20px)',
                     transition: `all 0.4s ease ${Math.min(index * 0.05, 0.5)}s`
                   }}
+                  onClick={() => handleProductClick(product.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      handleProductClick(product.id);
+                    }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`View details for ${product.name}`}
                 >
                   <div className="relative h-full">
                     {/* New arrival badge */}
@@ -598,6 +613,7 @@ export default function NewArrivalsPage() {
                         id: product.id,
                         name: product.name,
                         subcategory: product.subcategory,
+                        category: product.category,
                         price: product.price,
                         oldPrice: product.oldPrice,
                         discount: product.discount,
