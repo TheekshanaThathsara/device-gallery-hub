@@ -1,10 +1,14 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useCart } from '../../context/CartContext';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCartNotificationOpen, setIsCartNotificationOpen] = useState(false);
+  const cartNotificationRef = useRef(null);
   const location = useLocation();
+  const { cartItems, totalItems, removeItem, updateQuantity } = useCart();
 
   useEffect(() => {
     // Set to true immediately - we want the navbar to always have the "scrolled" appearance
@@ -24,6 +28,20 @@ export default function Navbar() {
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
+  
+  // Handle click outside for cart notification panel
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (cartNotificationRef.current && !cartNotificationRef.current.contains(event.target)) {
+        setIsCartNotificationOpen(false);
+      }
+    }
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [cartNotificationRef]);
 
   return (
     <nav 
@@ -119,18 +137,139 @@ export default function Navbar() {
 
             {/* Cart & Account */}
             <div className="flex items-center space-x-4">
-              <button className="relative p-2 rounded-full transition-colors duration-200 hover:bg-white/10">
-                <svg 
-                  className="h-5 w-5 text-white" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
+              <div className="relative" ref={cartNotificationRef}>
+                <button 
+                  className="relative p-2 rounded-full transition-colors duration-200 hover:bg-white/10"
+                  onClick={() => setIsCartNotificationOpen(!isCartNotificationOpen)}
+                  aria-label="Shopping cart"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                <span className="absolute -top-1 -right-1 bg-yellow-400 text-xs text-blue-800 font-bold rounded-full w-5 h-5 flex items-center justify-center">3</span>
-              </button>
-              <button className="relative p-2 rounded-full transition-colors duration-200 hover:bg-white/10">
+                  <svg 
+                    className="h-5 w-5 text-white" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                  {totalItems > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-yellow-400 text-xs text-blue-800 font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                      {totalItems}
+                    </span>
+                  )}
+                </button>
+                
+                {/* Cart Notification Panel */}
+                {isCartNotificationOpen && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg z-50 overflow-hidden border border-gray-200 animate-fadeIn origin-top-right transform transition-all">
+                    <div className="px-4 py-3 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+                      <h3 className="font-medium text-gray-700">Your Cart ({totalItems} items)</h3>
+                      <button 
+                        onClick={() => setIsCartNotificationOpen(false)}
+                        className="text-gray-400 hover:text-gray-600"
+                        aria-label="Close cart"
+                      >
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    
+                    <div className="max-h-80 overflow-y-auto">
+                      {cartItems.length === 0 ? (
+                        <div className="p-4 text-center">
+                          <p className="text-gray-500">Your cart is empty</p>
+                        </div>
+                      ) : (
+                        cartItems.map(item => (
+                          <div key={item.id} className="p-3 border-b border-gray-100 flex items-start">
+                            <Link to={`/product/${item.id}`} className="w-16 h-16 rounded overflow-hidden flex-shrink-0 border border-gray-200">
+                              <img 
+                                src={item.image} 
+                                alt={item.name} 
+                                className="w-full h-full object-cover"
+                                onError={(e) => { 
+                                  e.target.onerror = null;
+                                  e.target.src = 'https://via.placeholder.com/100?text=No+Image';
+                                }}
+                              />
+                            </Link>
+                            <div className="ml-3 flex-grow">
+                              <Link 
+                                to={`/product/${item.id}`} 
+                                className="block text-sm font-medium text-gray-800 hover:text-blue-600 truncate max-w-[180px]"
+                              >
+                                {item.name}
+                              </Link>
+                              <div className="flex justify-between items-center mt-1">
+                                <div className="flex items-center">
+                                  <span className="text-xs text-gray-500">Qty:</span>
+                                  <select 
+                                    value={item.quantity}
+                                    onChange={(e) => updateQuantity(item.id, parseInt(e.target.value))}
+                                    className="ml-1 text-xs border border-gray-300 rounded p-0.5 bg-transparent"
+                                  >
+                                    {[...Array(10)].map((_, i) => (
+                                      <option key={i} value={i + 1}>
+                                        {i + 1}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                                <div className="text-sm font-medium text-gray-800">
+                                  ${item.price.toFixed(2)}
+                                </div>
+                              </div>
+                              <div className="mt-1 flex justify-between items-center">
+                                {item.discount > 0 && (
+                                  <span className="text-xs font-medium text-red-600">
+                                    {item.discount}% OFF
+                                  </span>
+                                )}
+                                <button
+                                  onClick={() => removeItem(item.id)}
+                                  className="text-xs text-gray-400 hover:text-red-500"
+                                  aria-label={`Remove ${item.name}`}
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                    
+                    {cartItems.length > 0 && (
+                      <div className="p-4 bg-gray-50 border-t border-gray-200">
+                        <div className="flex justify-between items-center mb-3">
+                          <span className="text-sm text-gray-600">Subtotal:</span>
+                          <span className="text-sm font-bold text-gray-900">
+                            ${cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Link
+                            to="/cart"
+                            className="flex-1 py-2 px-4 bg-blue-100 hover:bg-blue-200 text-blue-700 text-center text-sm font-medium rounded-md transition-colors"
+                            onClick={() => setIsCartNotificationOpen(false)}
+                          >
+                            View Cart
+                          </Link>
+                          <Link
+                            to="/checkout"
+                            className="flex-1 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white text-center text-sm font-medium rounded-md transition-colors"
+                            onClick={() => setIsCartNotificationOpen(false)}
+                          >
+                            Checkout
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              
+              <Link to="/profile" className="relative p-2 rounded-full transition-colors duration-200 hover:bg-white/10">
                 <svg 
                   className="h-5 w-5 text-white" 
                   fill="none" 
@@ -139,7 +278,7 @@ export default function Navbar() {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -226,7 +365,7 @@ export default function Navbar() {
             Support
           </Link>
           <div className="flex items-center justify-between px-3 py-2 border-t border-white/10 mt-2">
-            <button className="flex items-center space-x-2">
+            <Link to="/cart" className="flex items-center space-x-2" onClick={() => setIsMobileMenuOpen(false)}>
               <svg 
                 className="h-5 w-5 text-white" 
                 fill="none" 
@@ -235,9 +374,16 @@ export default function Navbar() {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
-              <span className="text-white">Cart (3)</span>
-            </button>
-            <button className="flex items-center space-x-2">
+              <div className="relative text-white">
+                Cart ({totalItems})
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-6 bg-yellow-400 text-xs text-blue-800 font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </div>
+            </Link>
+            <Link to="/profile" className="flex items-center space-x-2" onClick={() => setIsMobileMenuOpen(false)}>
               <svg 
                 className="h-5 w-5 text-white" 
                 fill="none" 
@@ -247,7 +393,7 @@ export default function Navbar() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               <span className="text-white">Account</span>
-            </button>
+            </Link>
           </div>
         </div>
       </div>

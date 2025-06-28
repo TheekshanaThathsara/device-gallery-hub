@@ -18,81 +18,115 @@ import OrdersManagement from './components/admin/OrdersManagement';
 import InventoryManagement from './components/admin/InventoryManagement';
 import NewArrivalsPage from './components/shop/NewArrivalsPage';
 import DealsPage from './components/shop/DealsPage';
+import SupportPage from './components/support/SupportPage';
+import HelpCenterPage from './components/help/HelpCenterPage';
+import { CartProvider } from './context/CartContext';
+import CheckoutPage from './components/checkout/CheckoutPage';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Regular Store Routes */}
-      <Routes>
-        <Route path="/" element={
-          <>
-            <Navbar />
-            <main>
-              <Hero />
-              <CategorySection />
-              <FeaturedProducts />
-              <Testimonials />
-              <Newsletter />
-            </main>
-            <Footer />
-          </>
-        } />
-        <Route path="/shop" element={
-          <>
-            <Navbar />
-            <main>
-              <ProductListingPage />
-            </main>
-            <Footer />
-          </>
-        } />
-        <Route path="/new-arrivals" element={
-          <>
-            <Navbar />
-            <main className="pt-20"> {/* Added padding-top to account for fixed navbar */}
-              <NewArrivalsPage />
-            </main>
-            <Footer />
-          </>
-        } />
-        <Route path="/deals" element={
-          <>
-            <Navbar />
-            <main className="pt-20"> {/* Added padding-top to account for fixed navbar */}
-              <DealsPage />
-            </main>
-            <Footer />
-          </>
-        } />
-        <Route path="/product/:productId" element={
-          <>
-            <Navbar />
-            <main>
-              <ProductDetailsPage />
-            </main>
-            <Footer />
-          </>
-        } />
-        <Route path="/cart" element={
-          <>
-            <Navbar />
-            <main>
-              <CartPage />
-            </main>
-            <Footer />
-          </>
-        } />
+    <CartProvider>
+      <div className="min-h-screen bg-gray-50">
+        {/* Regular Store Routes */}
+        <Routes>
+          <Route path="/" element={
+            <>
+              <Navbar />
+              <main>
+                <Hero />
+                <CategorySection />
+                <FeaturedProducts />
+                <Testimonials />
+                <Newsletter />
+              </main>
+              <Footer />
+            </>
+          } />
+          <Route path="/shop" element={
+            <>
+              <Navbar />
+              <main>
+                <ProductListingPage />
+              </main>
+              <Footer />
+            </>
+          } />
+          <Route path="/new-arrivals" element={
+            <>
+              <Navbar />
+              <main className="pt-20"> {/* Added padding-top to account for fixed navbar */}
+                <NewArrivalsPage />
+              </main>
+              <Footer />
+            </>
+          } />
+          <Route path="/deals" element={
+            <>
+              <Navbar />
+              <main className="pt-20"> {/* Added padding-top to account for fixed navbar */}
+                <DealsPage />
+              </main>
+              <Footer />
+            </>
+          } />
+          <Route path="/product/:productId" element={
+            <>
+              <Navbar />
+              <main>
+                <ProductDetailsPage />
+              </main>
+              <Footer />
+            </>
+          } />
+          <Route path="/cart" element={
+            <>
+              <Navbar />
+              <main>
+                <CartPage />
+              </main>
+              <Footer />
+            </>
+          } />
+          
+          <Route path="/support" element={
+            <>
+              <Navbar />
+              <main className="pt-20"> {/* Added padding-top to account for fixed navbar */}
+                <SupportPage />
+              </main>
+              <Footer />
+            </>
+          } />
+          <Route path="/help-center" element={
+            <>
+              <Navbar />
+              <main className="pt-20"> {/* Added padding-top to account for fixed navbar */}
+                <HelpCenterPage />
+              </main>
+              <Footer />
+            </>
+          } />
+          <Route path="/checkout" element={
+            <>
+              <Navbar />
+              <main className="pt-20"> {/* Added padding-top to account for fixed navbar */}
+                <CheckoutPage />
+              </main>
+              <Footer />
+            </>
+          } />
 
-        {/* Admin Dashboard Routes */}
-        <Route path="/admin" element={<Dashboard />}>
-          <Route index element={<AdminHome />} />
-          <Route path="products" element={<ProductsManagement />} />
-          <Route path="products/:productId" element={<ProductForm />} />
-          <Route path="orders" element={<OrdersManagement />} />
-          <Route path="inventory" element={<InventoryManagement />} />
-        </Route>
-      </Routes>
-    </div>
+          {/* Admin Dashboard Routes */}
+          <Route path="/admin" element={<Dashboard />}>
+            <Route index element={<AdminHome />} />
+            <Route path="products" element={<ProductsManagement />} />
+            <Route path="products/:productId" element={<ProductForm />} />
+            <Route path="orders" element={<OrdersManagement />} />
+            <Route path="inventory" element={<InventoryManagement />} />
+          </Route>
+        </Routes>
+      </div>
+    </CartProvider>
   );
 }
 

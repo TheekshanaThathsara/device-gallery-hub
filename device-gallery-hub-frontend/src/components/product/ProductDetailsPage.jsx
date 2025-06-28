@@ -3,6 +3,14 @@ import { useParams, Link } from 'react-router-dom';
 import ImageGallery from './ImageGallery';
 import QuantitySelector from './QuantitySelector';
 import RelatedProducts from './RelatedProducts';
+import { useCart } from '../../context/CartContext';
+
+// Import product images for the gallery
+import cable1Img from '../../assets/images/products/cable1.jpg';
+import cable2Img from '../../assets/images/products/cable2.jpg';
+import cable3Img from '../../assets/images/products/cable3.jpg';
+import earbuds1Img from '../../assets/images/products/earbuds1.jpg';
+import powerbank1Img from '../../assets/images/products/powerbank1.jpg';
 
 export default function ProductDetailsPage() {
   const { productId } = useParams();
@@ -11,6 +19,21 @@ export default function ProductDetailsPage() {
   const [quantity, setQuantity] = useState(1);
   const [selectedTab, setSelectedTab] = useState('description');
   
+  // Function to get product images based on category
+  const getProductImages = (category) => {
+    switch (category.toLowerCase()) {
+      case 'cables':
+      case 'data-cables':
+        return [cable1Img, cable2Img, cable3Img];
+      case 'audio':
+        return [earbuds1Img];
+      case 'power':
+        return [powerbank1Img];
+      default:
+        return [cable1Img];
+    }
+  };
+
   useEffect(() => {
     // In a real app, you'd fetch the product data from an API
     // For this example, we'll use mock data
@@ -47,11 +70,7 @@ export default function ProductDetailsPage() {
             'Material': 'Braided Nylon',
             'Warranty': '12 months'
           },
-          images: [
-            'https://images.unsplash.com/photo-1589996448606-27d38c70dd4c?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
-            'https://images.unsplash.com/photo-1583863788434-e62bf5cd4c1c?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
-            'https://images.unsplash.com/photo-1609692814859-8cb88f72a3b1?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'
-          ]
+          images: getProductImages('data-cables')
         };
         
         setProduct(mockProduct);
@@ -69,12 +88,20 @@ export default function ProductDetailsPage() {
     setQuantity(value);
   };
   
+  const { addToCart: addToCartContext } = useCart();
+  
   const addToCart = () => {
-    // In a real app, you'd update the cart in your state management system
+    // Add the product to the cart context
+    addToCartContext(product, quantity);
+    
+    // Show feedback
     console.log(`Added ${quantity} of product ${productId} to cart`);
-    alert(`Added ${quantity} item(s) to your cart!`);
-    // Navigate to cart page
-    window.location.href = '/cart';
+    
+    // Optional: You can remove this alert and rely on the cart notification in the navbar
+    // alert(`Added ${quantity} item(s) to your cart!`);
+    
+    // Alternatively, you can navigate to cart page
+    // window.location.href = '/cart';
   };
   
   if (loading) {
