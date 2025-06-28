@@ -91,30 +91,30 @@ export default function FeaturedProducts() {
     },
     
     // Audio Category
-    {
-      id: 4,
-      name: 'Wireless Earbuds Pro',
-      category: 'Audio',
-      price: 79.99,
-      oldPrice: null,
-      image: earbuds1Img,
-      badge: 'New',
-      rating: 4.8,
-      reviews: 127,
-      isNew: true
-    },
-    {
-      id: 5,
-      name: 'Noise-Cancelling Headphones',
-      category: 'Audio',
-      price: 149.99,
-      oldPrice: 199.99,
-      image: earbudsImg,
-      badge: 'Premium',
-      rating: 4.9,
-      reviews: 312,
-      featured: true
-    },
+    // {
+    //   id: 4,
+    //   name: 'Wireless Earbuds Pro',
+    //   category: 'Audio',
+    //   price: 79.99,
+    //   oldPrice: null,
+    //   image: earbuds1Img,
+    //   badge: 'New',
+    //   rating: 4.8,
+    //   reviews: 127,
+    //   isNew: true
+    // },
+    // {
+    //   id: 5,
+    //   name: 'Noise-Cancelling Headphones',
+    //   category: 'Audio',
+    //   price: 149.99,
+    //   oldPrice: 199.99,
+    //   image: earbudsImg,
+    //   badge: 'Premium',
+    //   rating: 4.9,
+    //   reviews: 312,
+    //   featured: true
+    // },
     {
       id: 6,
       name: 'Bluetooth Sports Earphones',
@@ -202,29 +202,29 @@ export default function FeaturedProducts() {
     },
     
     // Handsfree Category
-    {
-      id: 13,
-      name: 'Bluetooth Car Handsfree Kit',
-      category: 'Handsfree',
-      price: 29.99,
-      oldPrice: 39.99,
-      image: handsfree1Img,
-      badge: 'Sale',
-      rating: 4.5,
-      reviews: 134
-    },
-    {
-      id: 14,
-      name: 'Premium Handsfree Earpiece',
-      category: 'Handsfree',
-      price: 49.99,
-      oldPrice: null,
-      image: handsfree1Img,
-      badge: 'HD Audio',
-      rating: 4.8,
-      reviews: 91,
-      featured: true
-    },
+    // {
+    //   id: 13,
+    //   name: 'Bluetooth Car Handsfree Kit',
+    //   category: 'Handsfree',
+    //   price: 29.99,
+    //   oldPrice: 39.99,
+    //   image: handsfree1Img,
+    //   badge: 'Sale',
+    //   rating: 4.5,
+    //   reviews: 134
+    // },
+    // {
+    //   id: 14,
+    //   name: 'Premium Handsfree Earpiece',
+    //   category: 'Handsfree',
+    //   price: 49.99,
+    //   oldPrice: null,
+    //   image: handsfree1Img,
+    //   badge: 'HD Audio',
+    //   rating: 4.8,
+    //   reviews: 91,
+    //   featured: true
+    // },
     {
       id: 15,
       name: 'Conference Speakerphone',
