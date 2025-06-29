@@ -90,6 +90,17 @@ export default function Navbar() {
             {/* Nav Links */}
             <div className="flex items-center space-x-6">
               <Link 
+                to="/" 
+                className={`text-sm font-medium transition-all duration-200 text-white hover:text-yellow-400 hover:scale-105 relative px-1 py-1 group ${
+                  location.pathname === '/' ? 'text-yellow-400' : ''
+                }`}
+              >
+                Home
+                <span className={`absolute bottom-0 left-0 h-0.5 bg-current transition-all duration-200 ${
+                  location.pathname === '/' ? 'w-full' : 'w-0 group-hover:w-full'
+                }`}></span>
+              </Link>
+              <Link 
                 to="/shop" 
                 className={`text-sm font-medium transition-all duration-200 text-white hover:text-yellow-400 hover:scale-105 relative px-1 py-1 group ${
                   location.pathname === '/shop' ? 'text-yellow-400' : ''
@@ -324,6 +335,16 @@ export default function Navbar() {
               </svg>
             </div>
           </div>
+          <Link 
+            to="/" 
+            className={`block px-3 py-2 rounded-md text-base font-medium ${
+              location.pathname === '/' 
+                ? 'text-yellow-400 bg-blue-800/50' 
+                : 'text-white hover:bg-white/10'
+            }`}
+          >
+            Home
+          </Link>
           <Link 
             to="/shop" 
             className={`block px-3 py-2 rounded-md text-base font-medium ${

@@ -1,13 +1,23 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 
 // Import sample product images for wishlist
 import cable1Img from '../../assets/images/products/cable1.jpg';
+import cable2Img from '../../assets/images/products/cable2.jpg';
+import cable3Img from '../../assets/images/products/cable3.jpg';
 import earbuds1Img from '../../assets/images/products/earbuds1.jpg';
+import earbuds3Img from '../../assets/images/products/earbuds3.jpg';
+import earbuds5Img from '../../assets/images/products/earbuds5.jpg';
 import powerbank1Img from '../../assets/images/products/powerbank1.jpg';
+import powerbank2Img from '../../assets/images/products/powerbank2.jpg';
+import powerbank3Img from '../../assets/images/products/powerbank3.jpeg';
 import charger1Img from '../../assets/images/products/charger1.jpg';
+import charger2Img from '../../assets/images/products/charger2.jpg';
+import charger3Img from '../../assets/images/products/charger3.jpeg';
 import handsfree1Img from '../../assets/images/products/handsfree1.jpg';
+import handsfree2Img from '../../assets/images/products/handsfree2.jpg';
+import handsfree3Img from '../../assets/images/products/handsfree3.jpg';
 
 export default function UserProfilePage() {
   const [activeTab, setActiveTab] = useState('profile');
@@ -26,7 +36,8 @@ export default function UserProfilePage() {
     profileImage: null
   });
   
-  const { cartItems } = useCart();
+  const { cartItems, addToCart } = useCart();
+  const navigate = useNavigate();
   
   // Sample orders data
   const [orders, setOrders] = useState([
@@ -91,7 +102,7 @@ export default function UserProfilePage() {
       price: 44.99,
       oldPrice: 54.99,
       discount: 18,
-      image: charger1Img,
+      image: charger2Img,
       inStock: true
     },
     {
@@ -100,7 +111,7 @@ export default function UserProfilePage() {
       price: 129.99,
       oldPrice: 159.99,
       discount: 19,
-      image: earbuds1Img,
+      image: earbuds3Img,
       inStock: true
     },
     {
@@ -109,7 +120,7 @@ export default function UserProfilePage() {
       price: 59.99,
       oldPrice: 79.99,
       discount: 25,
-      image: powerbank1Img,
+      image: powerbank3Img,
       inStock: false
     },
     {
@@ -118,7 +129,52 @@ export default function UserProfilePage() {
       price: 69.99,
       oldPrice: 89.99,
       discount: 22,
-      image: handsfree1Img,
+      image: handsfree2Img,
+      inStock: true
+    },
+    {
+      id: 102,
+      name: 'Braided Lightning Cable Pro',
+      price: 14.99,
+      oldPrice: 19.99,
+      discount: 25,
+      image: cable2Img,
+      inStock: true
+    },
+    {
+      id: 110,
+      name: 'Premium Tangle-Free USB Cable',
+      price: 15.99,
+      oldPrice: 19.99,
+      discount: 20,
+      image: cable3Img,
+      inStock: true
+    },
+    {
+      id: 109,
+      name: '10000mAh Slim Power Bank',
+      price: 29.99,
+      oldPrice: 39.99,
+      discount: 25,
+      image: powerbank2Img,
+      inStock: true
+    },
+    {
+      id: 118,
+      name: 'Compact 120W GaN Charger',
+      price: 49.99,
+      oldPrice: 69.99,
+      discount: 29,
+      image: charger3Img,
+      inStock: true
+    },
+    {
+      id: 115,
+      name: 'Premium Home Audio Earbuds',
+      price: 69.99,
+      oldPrice: 89.99,
+      discount: 22,
+      image: earbuds5Img,
       inStock: true
     }
   ]);
@@ -181,9 +237,22 @@ export default function UserProfilePage() {
     }
   };
   
-  // Function to handle removing item from wishlist
+  // Function to handle removing item from wishlist with animation
   const handleRemoveFromWishlist = (itemId) => {
-    setWishlist(prev => prev.filter(item => item.id !== itemId));
+    // Add a removing class to the item for fade-out animation
+    const itemToRemove = document.querySelector(`[data-wishlist-id="${itemId}"]`);
+    if (itemToRemove) {
+      itemToRemove.classList.add('opacity-0', 'scale-95');
+      itemToRemove.style.transition = 'all 0.3s ease-out';
+      
+      // Remove the item after animation completes
+      setTimeout(() => {
+        setWishlist(prev => prev.filter(item => item.id !== itemId));
+      }, 300);
+    } else {
+      // Fallback if item element not found
+      setWishlist(prev => prev.filter(item => item.id !== itemId));
+    }
   };
   
   // Function to make payment method default
@@ -199,6 +268,22 @@ export default function UserProfilePage() {
   // Function to remove payment method
   const handleRemovePayment = (methodId) => {
     setPaymentMethods(prev => prev.filter(method => method.id !== methodId));
+  };
+  
+  // Function to handle adding wishlist item to cart
+  const handleAddToCart = (item) => {
+    // Add item to cart
+    addToCart({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      quantity: 1,
+      discount: item.discount
+    });
+    
+    // Show success message
+    alert(`${item.name} added to cart!`);
   };
   
   const getCardIcon = (cardType) => {
@@ -232,7 +317,20 @@ export default function UserProfilePage() {
   return (
     <div className="bg-secondary-50 min-h-screen py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-secondary-800 mb-6">My Account</h1>
+        <div className="flex justify-between items-center mb-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center px-4 py-2 text-sm font-medium rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:bg-gray-50"
+            aria-label="Go back"
+          >
+            <svg className="w-4 h-4 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+          <h1 className="text-2xl md:text-3xl font-bold text-secondary-800">My Account</h1>
+          <div className="w-24"></div> {/* This empty div helps center the heading */}
+        </div>
         
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
@@ -661,33 +759,41 @@ export default function UserProfilePage() {
                   <div className="p-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                       {wishlist.map(item => (
-                        <div key={item.id} className="relative group bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
-                          <div className="relative h-48 overflow-hidden rounded-t-lg">
+                        <div 
+                          key={item.id} 
+                          data-wishlist-id={item.id}
+                          className="relative group bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                          <div className="relative h-48 overflow-hidden rounded-t-lg bg-gray-100">
                             <img 
                               src={typeof item.image === 'string' ? item.image : item.image.src || item.image} 
                               alt={item.name} 
-                              className="w-full h-full object-cover object-center"
+                              className="w-full h-full object-contain object-center p-2"
                               onError={(e) => {
                                 e.target.onerror = null;
                                 e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
                               }}
                             />
                             {item.discount > 0 && (
-                              <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold py-1 px-2 rounded">
+                              <div className="absolute top-2 right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold py-1 px-2 rounded-md shadow-sm">
                                 -{item.discount}%
                               </div>
                             )}
                             {!item.inStock && (
-                              <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
-                                <span className="text-white font-medium">Out of Stock</span>
+                              <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center backdrop-filter backdrop-blur-sm">
+                                <span className="text-white font-medium px-3 py-1 bg-black bg-opacity-50 rounded-md">Out of Stock</span>
                               </div>
                             )}
+                            <Link 
+                              to={`/product/${item.id}`} 
+                              className="absolute inset-0 z-10" 
+                              aria-label={`View details of ${item.name}`}
+                            ></Link>
                           </div>
                           
                           <div className="p-4">
                             <Link 
                               to={`/product/${item.id}`}
-                              className="text-secondary-800 hover:text-primary-600 text-sm font-medium line-clamp-2"
+                              className="text-secondary-800 hover:text-primary-600 text-sm font-medium line-clamp-2 block h-10"
                             >
                               {item.name}
                             </Link>
@@ -702,20 +808,24 @@ export default function UserProfilePage() {
                             <div className="mt-4 flex space-x-2">
                               <button
                                 disabled={!item.inStock}
-                                className={`flex-1 py-2 px-3 text-xs font-medium rounded ${
+                                className={`flex-1 py-2 px-3 text-xs font-medium rounded-md shadow-sm transition-colors ${
                                   item.inStock
-                                    ? 'bg-primary-600 hover:bg-primary-700 text-white'
+                                    ? 'bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white'
                                     : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                                 }`}
+                                onClick={() => item.inStock && handleAddToCart(item)}
                               >
                                 {item.inStock ? 'Add to Cart' : 'Out of Stock'}
                               </button>
                               
                               <button
                                 onClick={() => handleRemoveFromWishlist(item.id)}
-                                className="py-2 px-3 text-xs font-medium rounded border border-gray-300 hover:bg-gray-50"
+                                className="py-2 px-3 text-xs font-medium rounded-md border border-gray-300 hover:bg-gray-50 transition-colors shadow-sm"
+                                aria-label={`Remove ${item.name} from wishlist`}
                               >
-                                Remove
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
                               </button>
                             </div>
                           </div>

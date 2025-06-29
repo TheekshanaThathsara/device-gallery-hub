@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ProductCard from './ProductCard';
 
 // Import local images
@@ -197,6 +197,7 @@ export default function DealsPage() {
   const [fadeIn, setFadeIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [countdownTimers, setCountdownTimers] = useState({});
+  const navigate = useNavigate();
   
   // Extract unique categories
   const categories = ['all', ...new Set(dealProducts.map(product => product.category))];
@@ -320,6 +321,20 @@ export default function DealsPage() {
       </div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Back button */}
+        <div className="flex justify-start mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center px-4 py-2 text-sm font-medium rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:bg-gray-50"
+            aria-label="Go back"
+          >
+            <svg className="w-4 h-4 mr-2 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+        </div>
+        
         {/* Section Header */}
         <div className="text-center relative z-10 mb-12">
           <div className="relative inline-flex items-center px-4 py-2 rounded-full bg-red-100 text-red-800 text-sm font-medium mb-4">
