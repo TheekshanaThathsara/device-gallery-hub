@@ -23,11 +23,13 @@ import HelpCenterPage from './components/help/HelpCenterPage';
 import { CartProvider } from './context/CartContext';
 import CheckoutPage from './components/checkout/CheckoutPage';
 import UserProfilePage from './components/user/UserProfilePage';
+import ScrollToTop from './components/utils/ScrollToTop';
 
 function App() {
   return (
     <CartProvider>
       <div className="min-h-screen bg-gray-50">
+        <ScrollToTop />
         {/* Regular Store Routes */}
         <Routes>
           <Route path="/" element={

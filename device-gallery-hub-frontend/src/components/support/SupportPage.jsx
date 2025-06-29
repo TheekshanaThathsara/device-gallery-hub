@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function SupportPage() {
   const [activeCategory, setActiveCategory] = useState('faq');
@@ -12,6 +12,7 @@ export default function SupportPage() {
     issueType: 'general-inquiry',
     message: ''
   });
+  const navigate = useNavigate();
 
   // Toggle FAQ item expansion
   const toggleFaq = (id) => {
@@ -222,6 +223,19 @@ export default function SupportPage() {
 
       {/* Main content */}
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        {/* Back button */}
+        <div className="flex justify-start mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center px-4 py-2 text-sm font-medium rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:bg-gray-50"
+            aria-label="Go back"
+          >
+            <svg className="w-4 h-4 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+        </div>
         {/* Support category navigation */}
         <div className="mb-10">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">

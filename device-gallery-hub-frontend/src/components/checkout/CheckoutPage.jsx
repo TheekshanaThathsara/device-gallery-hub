@@ -117,7 +117,22 @@ export default function CheckoutPage() {
   return (
     <div className="bg-secondary-50 min-h-screen pt-6 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-secondary-800 mb-6">Checkout</h1>
+        <div className="flex justify-between items-center mb-6">
+          {currentStep === 1 && (
+            <button
+              onClick={() => navigate('/cart')}
+              className="flex items-center px-4 py-2 text-sm font-medium rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:bg-gray-50"
+              aria-label="Back to cart"
+            >
+              <svg className="w-4 h-4 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Cart
+            </button>
+          )}
+          <h1 className="text-2xl md:text-3xl font-bold text-secondary-800">Checkout</h1>
+          <div className="w-32"></div> {/* Empty spacer to balance layout */}
+        </div>
         
         {/* Checkout Steps Progress */}
         <CheckoutSteps currentStep={currentStep} />
